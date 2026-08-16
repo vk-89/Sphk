@@ -1,1 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FF6FA5">
+<title>Splitsies 💌 split expenses with your people</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💌%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#FF6FA5;
+    --pink-deep:#D6336C;
+    --pink-soft:#FFE1EC;
+    --lavender:#C8A8F0;
+    --lavender-soft:#EDE2FB;
+    --mint:#4FB894;
+    --mint-soft:#DFF5EC;
+    --coral:#FF7A66;
+    --coral-soft:#FFE4DE;
+    --cream:#FFF6F1;
+    --paper:#FFFDFA;
+    --ink:#3E2F3A;
+    --ink-soft:#8C7B8A;
+    --line:#F4DCE8;
+    --shadow:0 10px 30px -12px rgba(214,51,108,0.28);
+    --shadow-sm:0 4px 14px -6px rgba(214,51,108,0.22);
+    --radius:22px;
+    --radius-sm:14px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:'Quicksand',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 8% 4%, #FFE7F1 0%, transparent 45%),
+      radial-gradient(circle at 92% 12%, #F1E4FC 0%, transparent 40%),
+      linear-gradient(180deg,#FFF9F5 0%,#FFF4F8 100%);
+    min-height:100%;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Fredoka',sans-serif; font-weight:600; letter-spacing:-0.01em;}
+  .script{font-family:'Caveat',cursive; font-weight:600;}
+  button{font-family:inherit; cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+  ::selection{background:var(--pink-soft);}
+  a{color:inherit;}
 
+  #app{max-width:520px; margin:0 auto; min-height:100dvh; position:relative; padding-bottom:90px;}
+
+  /* ---------- Auth screen ---------- */
+  #authScreen{
+    min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:32px 28px; text-align:center; gap:18px;
+  }
+  .auth-charm{
+    width:104px; height:104px; border-radius:50%;
+    background:linear-gradient(135deg,var(--pink),var(--lavender));
+    display:flex; align-items:center; justify-content:center; font-size:46px;
+    box-shadow:var(--shadow); animation:floaty 4s ease-in-out infinite;
+  }
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-10px) rotate(2deg);}}
+  #authScreen h1{font-size:32px; margin:6px 0 0;}
+  #authScreen p{color:var(--ink-soft); font-size:15.5px; line-height:1.5; margin:0; max-width:320px;}
+  .tagline{font-family:'Caveat',cursive; font-size:22px; color:var(--pink-deep); margin-top:-6px;}
+  .btn-google{
+    margin-top:10px; display:flex; align-items:center; gap:10px; background:var(--paper);
+    border:2px solid var(--line); border-radius:999px; padding:13px 26px; font-weight:600; font-size:15.5px;
+    color:var(--ink); box-shadow:var(--shadow-sm); transition:transform .15s ease;
+  }
+  .btn-google:active{transform:scale(.96);}
+  .auth-features{display:flex; gap:16px; margin-top:18px; flex-wrap:wrap; justify-content:center;}
+  .auth-feature{font-size:12.5px; color:var(--ink-soft); display:flex; flex-direction:column; align-items:center; gap:4px; width:78px;}
+  .auth-feature span.ico{font-size:20px;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; padding:18px 20px 10px;
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(8px); background:rgba(255,249,245,0.85);
+  }
+  .brand{display:flex; align-items:center; gap:8px; font-size:20px;}
+  .brand b{font-family:'Fredoka',sans-serif;}
+  .user-chip{display:flex; align-items:center; gap:8px;}
+  .avatar{
+    width:34px; height:34px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow:0 0 0 2px var(--pink-soft);
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; background:var(--pink);
+  }
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; border:none; background:var(--paper); display:flex; align-items:center; justify-content:center;
+    font-size:16px; box-shadow:var(--shadow-sm); color:var(--ink-soft);
+  }
+  .icon-btn:active{transform:scale(.92);}
+
+  /* ---------- Sections / headers ---------- */
+  .section-pad{padding:6px 20px 20px;}
+  .page-title{font-size:24px; margin:6px 0 2px;}
+  .page-sub{font-family:'Caveat',cursive; color:var(--pink-deep); font-size:19px; margin:0 0 18px;}
+
+  /* ---------- Groups list ---------- */
+  .circle-card{
+    position:relative; background:var(--paper); border-radius:var(--radius); padding:16px 16px 16px 14px;
+    display:flex; align-items:center; gap:14px; margin-bottom:14px; box-shadow:var(--shadow-sm);
+    border:1px solid var(--line); animation:riseIn .35s ease both;
+  }
+  @keyframes riseIn{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
+  .charm{
+    width:52px; height:52px; min-width:52px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:24px; background:linear-gradient(135deg,var(--pink-soft),var(--lavender-soft));
+  }
+  .circle-info{flex:1; min-width:0;}
+  .circle-info .name{font-weight:600; font-size:16.5px; margin:0 0 3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .avatar-stack{display:flex;}
+  .avatar-stack .avatar{width:22px; height:22px; font-size:9px; margin-left:-8px; box-shadow:0 0 0 2px var(--paper);}
+  .avatar-stack .avatar:first-child{margin-left:0;}
+  .circle-balance{font-size:13px; font-weight:600;}
+  .bal-owe{color:var(--coral);}
+  .bal-owed{color:var(--mint);}
+  .bal-even{color:var(--ink-soft);}
+  .chev{color:var(--ink-soft); font-size:14px;}
+
+  .empty-state{text-align:center; padding:50px 20px; color:var(--ink-soft);}
+  .empty-state .big{font-size:44px; margin-bottom:10px;}
+  .empty-state p{font-size:14.5px; line-height:1.5;}
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed; right:24px; bottom:24px; width:58px; height:58px; border-radius:50%; border:none;
+    background:linear-gradient(135deg,var(--pink),var(--pink-deep)); color:#fff; font-size:26px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 12px 26px -8px rgba(214,51,108,0.55);
+    z-index:30; max-width:520px; margin:0 auto;
+  }
+  .fab:active{transform:scale(.9);}
+  .fab-wide{width:auto; border-radius:999px; padding:0 22px; gap:8px; font-size:15px; font-weight:600; font-family:'Quicksand',sans-serif;}
+
+  /* ---------- Group detail header ---------- */
+  .group-header{padding:14px 20px 0;}
+  .backrow{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .group-title-row{display:flex; align-items:center; gap:12px;}
+  .group-title-row .name{font-size:22px; margin:0;}
+  .group-title-row .charm{width:44px; height:44px; font-size:20px;}
+  .member-row{display:flex; align-items:center; gap:8px; margin-top:10px; cursor:pointer;}
+  .member-row .avatar-stack .avatar{width:26px; height:26px; font-size:10px;}
+  .member-row span.lbl{font-size:12.5px; color:var(--ink-soft);}
+
+  .tabs{display:flex; gap:6px; padding:16px 20px 0; position:sticky; top:64px; background:rgba(255,249,245,0.9); backdrop-filter:blur(6px); z-index:15;}
+  .tab-btn{
+    flex:1; border:none; background:transparent; padding:10px 4px; border-radius:999px; font-weight:600; font-size:13.5px;
+    color:var(--ink-soft); border:1.5px solid transparent;
+  }
+  .tab-btn.active{background:var(--paper); color:var(--pink-deep); border-color:var(--line); box-shadow:var(--shadow-sm);}
+
+  /* ---------- Filter row ---------- */
+  .filter-row{display:flex; gap:8px; overflow-x:auto; padding:14px 20px 4px; scrollbar-width:none;}
+  .filter-row::-webkit-scrollbar{display:none;}
+  .chip{
+    white-space:nowrap; padding:7px 13px; border-radius:999px; background:var(--paper); border:1.5px solid var(--line);
+    font-size:12.5px; font-weight:600; color:var(--ink-soft); display:flex; align-items:center; gap:5px;
+  }
+  .chip.active{background:linear-gradient(135deg,var(--pink-soft),var(--lavender-soft)); color:var(--pink-deep); border-color:var(--pink);}
+
+  .stat-strip{margin:14px 20px 4px; background:linear-gradient(135deg,var(--pink-soft),var(--lavender-soft)); border-radius:var(--radius-sm); padding:12px 16px; display:flex; justify-content:space-between; font-size:12.5px; color:var(--pink-deep); font-weight:600;}
+
+  /* ---------- Receipt / expense card ---------- */
+  .day-label{font-family:'Caveat',cursive; font-size:19px; color:var(--pink-deep); margin:18px 20px 6px;}
+  .receipt{
+    position:relative; margin:0 20px 16px; background:var(--paper); border-radius:16px 16px 4px 4px; padding:15px 16px 16px;
+    box-shadow:var(--shadow-sm); border:1px solid var(--line);
+    clip-path:polygon(0 0,100% 0,100% 96%,96% 100%,92% 96%,88% 100%,84% 96%,80% 100%,76% 96%,72% 100%,68% 96%,64% 100%,60% 96%,56% 100%,52% 96%,48% 100%,44% 96%,40% 100%,36% 96%,32% 100%,28% 96%,24% 100%,20% 96%,16% 100%,12% 96%,8% 100%,4% 96%,0 100%);
+    padding-bottom:22px; animation:riseIn .3s ease both; opacity:.99;
+  }
+  .receipt.deleted{opacity:.55;}
+  .washi{
+    position:absolute; top:-8px; left:18px; width:54px; height:18px; border-radius:3px; transform:rotate(-4deg);
+    background:repeating-linear-gradient(45deg,var(--lavender) 0 6px, var(--lavender-soft) 6px 12px); opacity:.85;
+  }
+  .receipt-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-top:4px;}
+  .receipt-desc{display:flex; gap:10px; align-items:flex-start; min-width:0;}
+  .tag-sticker{width:34px; height:34px; min-width:34px; border-radius:50%; background:var(--cream); display:flex; align-items:center; justify-content:center; font-size:16px;}
+  .receipt-desc .txt .title{font-weight:600; font-size:15px; margin:0 0 2px; word-break:break-word;}
+  .receipt-desc .txt .meta{font-size:11.5px; color:var(--ink-soft);}
+  .receipt-amt{font-family:'Fredoka',sans-serif; font-weight:600; font-size:17px; white-space:nowrap;}
+  .receipt-bottom{display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);}
+  .receipt-split-note{font-size:11.5px; color:var(--ink-soft);}
+  .receipt-actions{display:flex; gap:6px;}
+  .mini-btn{border:none; background:var(--cream); width:28px; height:28px; border-radius:50%; font-size:12px; display:flex; align-items:center; justify-content:center; color:var(--ink-soft);}
+  .mini-btn:active{transform:scale(.9);}
+  .edited-pill{font-size:10.5px; background:var(--lavender-soft); color:var(--pink-deep); padding:2px 8px; border-radius:999px; font-weight:700; border:none;}
+  .settle-card{background:linear-gradient(135deg,var(--mint-soft),var(--pink-soft)); border-style:dashed;}
+
+  /* ---------- Balances tab ---------- */
+  .balance-hero{margin:16px 20px; background:linear-gradient(135deg,var(--pink),var(--lavender)); border-radius:var(--radius); padding:22px 20px; color:#fff; box-shadow:var(--shadow);}
+  .balance-hero .lbl{font-size:12.5px; opacity:.85; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
+  .balance-hero .amt{font-family:'Fredoka',sans-serif; font-size:34px; margin-top:4px;}
+  .member-balance-row{display:flex; align-items:center; justify-content:space-between; margin:0 20px 10px; background:var(--paper); border-radius:var(--radius-sm); padding:12px 14px; border:1px solid var(--line);}
+  .mb-left{display:flex; align-items:center; gap:10px;}
+  .settle-suggest{margin:0 20px 10px; background:var(--paper); border:1px dashed var(--pink); border-radius:var(--radius-sm); padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px;}
+  .settle-suggest .txt{font-size:13.5px;}
+  .pill-btn{
+    border:none; background:linear-gradient(135deg,var(--pink),var(--pink-deep)); color:#fff; font-weight:700;
+    padding:8px 16px; border-radius:999px; font-size:12.5px; white-space:nowrap;
+  }
+  .pill-btn.ghost{background:var(--cream); color:var(--pink-deep);}
+  .pill-btn:active{transform:scale(.94);}
+  .section-label{margin:22px 20px 8px; font-size:13px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em;}
+
+  /* ---------- Activity tab ---------- */
+  .diary-entry{display:flex; gap:12px; margin:0 20px 16px;}
+  .diary-dot{width:10px; height:10px; border-radius:50%; background:var(--pink); margin-top:6px; min-width:10px;}
+  .diary-line{width:2px; background:var(--line); flex:1; margin:2px auto;}
+  .diary-content{flex:1; padding-bottom:2px;}
+  .diary-content .who{font-weight:700; font-size:13.5px;}
+  .diary-content .what{font-size:13.5px; color:var(--ink); line-height:1.5;}
+  .diary-content .when{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(62,47,58,0.45); display:flex; align-items:flex-end; justify-content:center;
+    z-index:100; opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .modal-overlay.open{opacity:1; pointer-events:auto;}
+  .modal-sheet{
+    background:var(--cream); width:100%; max-width:520px; border-radius:26px 26px 0 0; max-height:90dvh; overflow-y:auto;
+    padding:10px 20px 26px; transform:translateY(30px); transition:transform .25s ease; box-shadow:0 -10px 40px rgba(0,0,0,0.2);
+  }
+  .modal-overlay.open .modal-sheet{transform:translateY(0);}
+  .modal-handle{width:38px; height:5px; background:var(--line); border-radius:999px; margin:8px auto 14px;}
+  .modal-title{font-size:19px; margin:0 0 16px; display:flex; align-items:center; justify-content:space-between;}
+  .field{margin-bottom:14px;}
+  .field label{font-size:12.5px; font-weight:700; color:var(--ink-soft); display:block; margin-bottom:6px;}
+  .field input[type=text], .field input[type=number], .field input[type=datetime-local], .field select, .field textarea{
+    width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:1.5px solid var(--line); background:var(--paper);
+    font-size:15px; color:var(--ink);
+  }
+  .field input:focus, .field select:focus{outline:none; border-color:var(--pink);}
+  .chip-picker{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip-opt{padding:9px 13px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); font-size:13px; font-weight:600; color:var(--ink-soft);}
+  .chip-opt.selected{background:linear-gradient(135deg,var(--pink),var(--pink-deep)); color:#fff; border-color:transparent;}
+  .segmented{display:flex; background:var(--paper); border-radius:999px; padding:4px; border:1.5px solid var(--line);}
+  .segmented button{flex:1; border:none; background:transparent; padding:9px; border-radius:999px; font-weight:700; font-size:13.5px; color:var(--ink-soft);}
+  .segmented button.active{background:linear-gradient(135deg,var(--pink),var(--pink-deep)); color:#fff;}
+  .member-check-row, .member-manual-row{display:flex; align-items:center; gap:10px; padding:9px 0;}
+  .member-manual-row input{width:100px; text-align:right;}
+  .member-check-row .name, .member-manual-row .name{flex:1; font-size:14px;}
+  .checkbox{width:20px; height:20px; border-radius:6px; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff;}
+  .checkbox.checked{background:var(--pink); border-color:var(--pink);}
+  .alloc-status{font-size:12.5px; font-weight:700; margin-top:6px; padding:8px 12px; border-radius:10px;}
+  .alloc-ok{background:var(--mint-soft); color:var(--mint);}
+  .alloc-bad{background:var(--coral-soft); color:var(--coral);}
+  .modal-actions{display:flex; gap:10px; margin-top:18px;}
+  .btn-primary{
+    flex:1; border:none; background:linear-gradient(135deg,var(--pink),var(--pink-deep)); color:#fff; font-weight:700;
+    padding:14px; border-radius:999px; font-size:15px; box-shadow:var(--shadow-sm);
+  }
+  .btn-primary:active{transform:scale(.97);}
+  .btn-primary:disabled{opacity:.45;}
+  .btn-secondary{border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft); font-weight:700; padding:14px 20px; border-radius:999px; font-size:15px;}
+  .btn-danger{background:linear-gradient(135deg,var(--coral),#E85B45);}
+  .emoji-pick-grid{display:flex; flex-wrap:wrap; gap:8px;}
+  .emoji-pick{width:42px; height:42px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); font-size:19px; display:flex; align-items:center; justify-content:center;}
+  .emoji-pick.selected{border-color:var(--pink); background:var(--pink-soft);}
+  .code-display{display:flex; align-items:center; gap:10px; background:var(--paper); border:1.5px dashed var(--pink); border-radius:var(--radius-sm); padding:12px 14px; justify-content:space-between;}
+  .code-display .code{font-family:'Fredoka',sans-serif; font-size:20px; letter-spacing:.12em; color:var(--pink-deep);}
+  .member-sheet-row{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);}
+  .member-sheet-row:last-child{border-bottom:none;}
+
+  /* ---------- Toast ---------- */
+  #toastHost{position:fixed; bottom:96px; left:0; right:0; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:200; pointer-events:none;}
+  .toast{
+    background:var(--ink); color:#fff; padding:11px 20px; border-radius:999px; font-size:13.5px; font-weight:600;
+    box-shadow:0 8px 22px rgba(0,0,0,0.25); animation:toastIn .25s ease both;
+  }
+  @keyframes toastIn{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- Skeletons ---------- */
+  .skel{background:linear-gradient(90deg,#F6E6ED 25%,#FBF0F4 37%,#F6E6ED 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:var(--radius);}
+  @keyframes shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
+  .skel-card{height:78px; margin:0 20px 14px;}
+
+  .hidden{display:none !important;}
+  .center-loader{display:flex; align-items:center; justify-content:center; min-height:60vh; font-size:30px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen">
+    <div class="auth-charm">💌</div>
+    <h1>Splitsies</h1>
+    <p class="tagline">split the bill, not the friendship</p>
+    <p>Track shared expenses with your people — split evenly or your own way, and every edit stays visible so there's never a "wait, who changed this?" moment.</p>
+    <button class="btn-google" data-action="signIn">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.9 5.1 29.7 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 8 3l6-6C34.9 5.1 29.7 3 24 3c-7.4 0-13.8 4.1-17.1 10.1z"/><path fill="#4CAF50" d="M24 45c5.6 0 10.7-2.1 14.5-5.6l-6.7-5.5C29.7 35.6 27 36.5 24 36.5c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.2 40.9 16 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.4l6.7 5.5C41.9 35.6 45 30.5 45 24c0-1.4-.1-2.7-.4-3.5z"/></svg>
+      Continue with Google
+    </button>
+    <div class="auth-features">
+      <div class="auth-feature"><span class="ico">🧾</span>Split evenly or custom</div>
+      <div class="auth-feature"><span class="ico">🕊️</span>Every edit stays visible</div>
+      <div class="auth-feature"><span class="ico">💖</span>Data kept forever</div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="mainScreen" class="hidden">
+    <div class="topbar">
+      <div class="brand">💌 <b>Splitsies</b></div>
+      <div class="user-chip">
+        <button class="icon-btn" data-action="signOut" title="Sign out">⎋</button>
+        <img class="avatar" id="topAvatar">
+      </div>
+    </div>
+    <div id="viewRoot"></div>
+  </div>
+
+  <div id="toastHost"></div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-sheet" id="modalSheet"></div>
+  </div>
+</div>
+
+<script type="module">
+/* ============================================================
+   SPLITSIES — single-file expense splitter
+   Firebase v10 modular SDK (Auth + Firestore)
+   ============================================================ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
+  getRedirectResult, onAuthStateChanged, signOut as fbSignOut
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection,
+  query, where, orderBy, onSnapshot, serverTimestamp, arrayUnion
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+/* ---------- 🔧 PASTE YOUR FIREBASE CONFIG HERE 🔧 ---------- */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+/* ---------- constants ---------- */
+const TAGS = [
+  {id:'food', label:'Food', emoji:'🍜'},
+  {id:'travel', label:'Travel', emoji:'✈️'},
+  {id:'entertainment', label:'Fun', emoji:'🎬'},
+  {id:'shopping', label:'Shopping', emoji:'🛍️'},
+  {id:'home', label:'Home', emoji:'🏠'},
+  {id:'transport', label:'Transport', emoji:'🚗'},
+  {id:'health', label:'Health', emoji:'💊'},
+  {id:'party', label:'Party', emoji:'🎉'},
+  {id:'other', label:'Other', emoji:'📦'}
+];
+const GROUP_EMOJIS = ['👛','💌','🎀','🧁','🍡','🌷','🦄','🍭','🌸','💫','🐚','🍓','🎈','🧿'];
+const CURRENCIES = ['₹','$','€','£','¥'];
+const AVATAR_PALETTE = ['#FF6FA5','#C8A8F0','#4FB894','#FF7A66','#F5B94B','#5AA9E6','#E67ACB','#8C7B8A'];
+
+/* ---------- state ---------- */
+const state = {
+  user:null, groups:[], groupsUnsub:null,
+  currentGroupId:null, currentGroup:null, currentGroupUnsub:null,
+  expenses:[], expensesUnsub:null,
+  activity:[], activityUnsub:null,
+  currentTab:'expenses', filterTag:'all', searchQuery:'', showDeleted:false,
+  editingExpenseId:null
+};
+
+/* ---------- tiny utils ---------- */
+const $ = (sel,root=document)=>root.querySelector(sel);
+const $$ = (sel,root=document)=>Array.from(root.querySelectorAll(sel));
+function escapeHtml(str){
+  return String(str==null?'':str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function tagInfo(id){ return TAGS.find(t=>t.id===id) || TAGS[TAGS.length-1]; }
+function currencySymbol(){ return (state.currentGroup && state.currentGroup.currency) || '₹'; }
+function fmtMoney(n){
+  const v = Math.round((n||0)*100)/100;
+  return currencySymbol() + v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}) + ' · ' +
+         d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+}
+function fmtDateShort(iso){
+  const d = new Date(iso), now = new Date();
+  const sameDay = d.toDateString()===now.toDateString();
+  const y = new Date(now); y.setDate(now.getDate()-1);
+  if(sameDay) return 'Today';
+  if(d.toDateString()===y.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString(undefined,{day:'numeric',month:'short',year: d.getFullYear()!==now.getFullYear()?'numeric':undefined});
+}
+function fmtWhen(ts){
+  if(!ts) return 'just now';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString(undefined,{day:'numeric',month:'short'}) + ' · ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+}
+function toLocalInputValue(d=new Date()){
+  const pad = n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function initials(name){
+  if(!name) return '?';
+  return name.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+function hashCode(str){ let h=0; for(let i=0;i<str.length;i++){h=(h*31+str.charCodeAt(i))|0;} return Math.abs(h); }
+function avatarColorFor(uid){ return AVATAR_PALETTE[hashCode(uid||'x') % AVATAR_PALETTE.length]; }
+function avatarHtml(uid, size=34){
+  const m = (state.currentGroup && state.currentGroup.members && state.currentGroup.members[uid]) ||
+            (state.user && state.user.uid===uid ? {name:state.user.displayName, photo:state.user.photoURL} : null);
+  const name = m ? m.name : 'Member';
+  const photo = m ? m.photo : '';
+  const style = `width:${size}px;height:${size}px;min-width:${size}px;font-size:${Math.round(size*0.38)}px;`;
+  if(photo) return `<img class="avatar" style="${style}" src="${escapeHtml(photo)}" alt="${escapeHtml(name)}">`;
+  return `<div class="avatar" style="${style}background:${avatarColorFor(uid)}">${escapeHtml(initials(name))}</div>`;
+}
+function memberName(uid){
+  if(state.user && state.user.uid===uid) return 'You';
+  const m = state.currentGroup && state.currentGroup.members && state.currentGroup.members[uid];
+  return m ? m.name : 'Someone';
+}
+function genCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s=''; for(let i=0;i<6;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+function toast(msg){
+  const host = $('#toastHost');
+  const el = document.createElement('div');
+  el.className='toast'; el.textContent=msg;
+  host.appendChild(el);
+  setTimeout(()=>{ el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.remove(),300); }, 2400);
+}
+
+/* ---------- split math ---------- */
+function splitEqually(amount, uids){
+  const cents = Math.round(amount*100);
+  const n = uids.length || 1;
+  const base = Math.floor(cents/n);
+  let remainder = cents - base*n;
+  const result = {};
+  uids.forEach((uid)=>{
+    const extra = remainder>0 ? 1 : 0;
+    if(remainder>0) remainder--;
+    result[uid] = (base+extra)/100;
+  });
+  return result;
+}
+function computeBalances(){
+  const balances = {};
+  Object.keys((state.currentGroup&&state.currentGroup.members)||{}).forEach(uid=>balances[uid]=0);
+  state.expenses.filter(e=>!e.deleted).forEach(e=>{
+    if(e.type==='settlement'){
+      balances[e.from]=(balances[e.from]||0)+e.amount;
+      balances[e.to]=(balances[e.to]||0)-e.amount;
+    } else {
+      balances[e.paidBy]=(balances[e.paidBy]||0)+e.amount;
+      Object.entries(e.splits||{}).forEach(([uid,amt])=>{ balances[uid]=(balances[uid]||0)-amt; });
+    }
+  });
+  return balances;
+}
+function simplifyDebts(balances){
+  const creditors=[], debtors=[];
+  Object.entries(balances).forEach(([uid,bal])=>{
+    const b=Math.round(bal*100)/100;
+    if(b>0.004) creditors.push({uid,amt:b});
+    else if(b<-0.004) debtors.push({uid,amt:-b});
+  });
+  creditors.sort((a,b)=>b.amt-a.amt); debtors.sort((a,b)=>b.amt-a.amt);
+  const txns=[]; let i=0,j=0;
+  while(i<debtors.length && j<creditors.length){
+    const d=debtors[i], c=creditors[j];
+    const amt=Math.min(d.amt,c.amt);
+    if(amt>0.004) txns.push({from:d.uid,to:c.uid,amount:Math.round(amt*100)/100});
+    d.amt-=amt; c.amt-=amt;
+    if(d.amt<=0.004) i++;
+    if(c.amt<=0.004) j++;
+  }
+  return txns;
+}
+function diffExpense(oldE,newE){
+  const changes=[];
+  if(oldE.description!==newE.description) changes.push(`renamed "${oldE.description}" → "${newE.description}"`);
+  if(oldE.amount!==newE.amount) changes.push(`amount changed from ${fmtMoney(oldE.amount)} to ${fmtMoney(newE.amount)}`);
+  if(oldE.tag!==newE.tag) changes.push(`category changed from ${tagInfo(oldE.tag).emoji} ${tagInfo(oldE.tag).label} to ${tagInfo(newE.tag).emoji} ${tagInfo(newE.tag).label}`);
+  if(oldE.paidBy!==newE.paidBy) changes.push(`payer changed from ${memberName(oldE.paidBy)} to ${memberName(newE.paidBy)}`);
+  if(new Date(oldE.date).getTime()!==new Date(newE.date).getTime()) changes.push(`date changed from ${fmtDate(oldE.date)} to ${fmtDate(newE.date)}`);
+  if(oldE.splitType!==newE.splitType || JSON.stringify(oldE.splits)!==JSON.stringify(newE.splits)) changes.push(`split adjusted (now ${newE.splitType==='equal'?'equal':'manual'})`);
+  return changes.length?changes:['made a small edit'];
+}
+
+/* ---------- modal ---------- */
+function openModal(html){
+  $('#modalSheet').innerHTML = `<div class="modal-handle"></div>${html}`;
+  $('#modalOverlay').classList.add('open');
+}
+function closeModal(){
+  $('#modalOverlay').classList.remove('open');
+  setTimeout(()=>{ $('#modalSheet').innerHTML=''; }, 200);
+}
+$('#modalOverlay').addEventListener('click', e=>{ if(e.target.id==='modalOverlay') closeModal(); });
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+async function doSignIn(){
+  try{ await signInWithPopup(auth, provider); }
+  catch(err){
+    if(err && (err.code==='auth/popup-blocked' || err.code==='auth/cancelled-popup-request')){
+      try{ await signInWithRedirect(auth, provider); }catch(e2){ toast('Sign-in failed 💔'); console.error(e2); }
+    } else { console.error(err); toast('Sign-in failed 💔'); }
+  }
+}
+async function doSignOut(){
+  if(state.groupsUnsub) state.groupsUnsub();
+  if(state.currentGroupUnsub) state.currentGroupUnsub();
+  if(state.expensesUnsub) state.expensesUnsub();
+  if(state.activityUnsub) state.activityUnsub();
+  await fbSignOut(auth);
+}
+getRedirectResult(auth).catch(()=>{});
+
+onAuthStateChanged(auth, async (user)=>{
+  if(user){
+    state.user = user;
+    await setDoc(doc(db,'users',user.uid), {
+      displayName:user.displayName||'', email:user.email||'', photoURL:user.photoURL||'', updatedAt:serverTimestamp()
+    }, {merge:true});
+    $('#authScreen').classList.add('hidden');
+    $('#mainScreen').classList.remove('hidden');
+    $('#topAvatar').src = user.photoURL || '';
+    subscribeGroups();
+    renderGroupsList();
+  } else {
+    state.user=null;
+    $('#authScreen').classList.remove('hidden');
+    $('#mainScreen').classList.add('hidden');
+  }
+});
+
+/* ============================================================
+   GROUPS
+   ============================================================ */
+function subscribeGroups(){
+  const q = query(collection(db,'groups'), where('memberIds','array-contains', state.user.uid));
+  state.groupsUnsub = onSnapshot(q, snap=>{
+    state.groups = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!state.currentGroupId) renderGroupsList();
+  }, err=>{ console.error(err); toast('Could not load your circles 💔'); });
+}
+
+function myBalanceInGroup(group){
+  // quick balance using only this group's expenses if it's the open one; else compute lazily as 0 (loaded on open)
+  if(state.currentGroupId===group.id){
+    const b = computeBalances();
+    return b[state.user.uid]||0;
+  }
+  return null;
+}
+
+function renderGroupsList(){
+  const root = $('#viewRoot');
+  const groups = state.groups.slice().sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+  let cardsHtml;
+  if(groups.length===0){
+    cardsHtml = `
+      <div class="empty-state">
+        <div class="big">🎀</div>
+        <p>No circles yet. Start one with your roommates, your trip squad, or your bestie — and split every expense without the awkward math.</p>
+      </div>`;
+  } else {
+    cardsHtml = groups.map(g=>{
+      const memberIds = g.memberIds||[];
+      const stack = memberIds.slice(0,4).map(uid=>{
+        const m=(g.members||{})[uid]||{};
+        return m.photo ? `<img class="avatar" src="${escapeHtml(m.photo)}">` : `<div class="avatar" style="background:${avatarColorFor(uid)}">${escapeHtml(initials(m.name||'?'))}</div>`;
+      }).join('');
+      return `
+      <div class="circle-card" data-action="openGroup" data-id="${g.id}">
+        <div class="charm">${g.emoji||'💌'}</div>
+        <div class="circle-info">
+          <p class="name">${escapeHtml(g.name)}</p>
+          <div class="avatar-stack">${stack}</div>
+        </div>
+        <span class="chev">›</span>
+      </div>`;
+    }).join('');
+  }
+  root.innerHTML = `
+    <div class="section-pad">
+      <h2 class="page-title">Your circles</h2>
+      <p class="page-sub">where the splitting happens ✨</p>
+      ${cardsHtml}
+    </div>
+    <button class="fab" data-action="openAddCircle">+</button>
+  `;
+}
+
+function openAddCircleModal(){
+  openModal(`
+    <div class="modal-title">Add a circle 💫</div>
+    <div class="segmented" id="circleModeSeg">
+      <button class="active" data-mode="create">Create new</button>
+      <button data-mode="join">Join with code</button>
+    </div>
+    <div id="circleModeBody" style="margin-top:16px;"></div>
+  `);
+  renderCreateCircleForm();
+  $('#circleModeSeg').addEventListener('click', e=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    $$('#circleModeSeg button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    btn.dataset.mode==='create' ? renderCreateCircleForm() : renderJoinCircleForm();
+  });
+}
+function renderCreateCircleForm(){
+  $('#circleModeBody').innerHTML = `
+    <div class="field"><label>Circle name</label><input type="text" id="cName" placeholder="Goa Trip, Flat 3B, Girls' night…" maxlength="40"></div>
+    <div class="field"><label>Pick a charm</label><div class="emoji-pick-grid" id="cEmojiGrid">
+      ${GROUP_EMOJIS.map((e,i)=>`<button class="emoji-pick${i===0?' selected':''}" data-emoji="${e}">${e}</button>`).join('')}
+    </div></div>
+    <div class="field"><label>Currency</label><select id="cCurrency">${CURRENCIES.map(c=>`<option ${c==='₹'?'selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="modal-actions"><button class="btn-primary" id="cCreateBtn">Create circle</button></div>
+  `;
+  let selectedEmoji = GROUP_EMOJIS[0];
+  $('#cEmojiGrid').addEventListener('click', e=>{
+    const b=e.target.closest('.emoji-pick'); if(!b) return;
+    $$('.emoji-pick', $('#cEmojiGrid')).forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected'); selectedEmoji=b.dataset.emoji;
+  });
+  $('#cCreateBtn').addEventListener('click', async ()=>{
+    const name = $('#cName').value.trim();
+    if(!name){ toast('Give your circle a name 🎀'); return; }
+    $('#cCreateBtn').disabled=true; $('#cCreateBtn').textContent='Creating…';
+    try{
+      const groupRef = doc(collection(db,'groups'));
+      const code = genCode();
+      await setDoc(groupRef, {
+        name, emoji:selectedEmoji, currency:$('#cCurrency').value,
+        createdBy: state.user.uid, createdAt: serverTimestamp(),
+        memberIds:[state.user.uid],
+        members:{ [state.user.uid]: {name: state.user.displayName||'You', photo: state.user.photoURL||''} },
+        inviteCode: code
+      });
+      await setDoc(doc(db,'inviteCodes',code), {groupId: groupRef.id});
+      closeModal(); toast('Circle created 🎀'); openGroup(groupRef.id);
+    }catch(err){ console.error(err); toast('Something went wrong 💔'); $('#cCreateBtn').disabled=false; $('#cCreateBtn').textContent='Create circle'; }
+  });
+}
+function renderJoinCircleForm(){
+  $('#circleModeBody').innerHTML = `
+    <div class="field"><label>Invite code</label><input type="text" id="jCode" placeholder="ABC123" maxlength="6" style="text-transform:uppercase; letter-spacing:.1em;"></div>
+    <div class="modal-actions"><button class="btn-primary" id="jJoinBtn">Join circle</button></div>
+  `;
+  $('#jJoinBtn').addEventListener('click', async ()=>{
+    const code = $('#jCode').value.trim().toUpperCase();
+    if(code.length<4){ toast('Enter a valid code'); return; }
+    $('#jJoinBtn').disabled=true; $('#jJoinBtn').textContent='Joining…';
+    try{
+      const codeSnap = await getDoc(doc(db,'inviteCodes',code));
+      if(!codeSnap.exists()){ toast("That code didn't match any circle 🥺"); $('#jJoinBtn').disabled=false; $('#jJoinBtn').textContent='Join circle'; return; }
+      const groupId = codeSnap.data().groupId;
+      const gRef = doc(db,'groups',groupId);
+      const gSnap = await getDoc(gRef);
+      if(!gSnap.exists()){ toast('This circle no longer exists'); $('#jJoinBtn').disabled=false; $('#jJoinBtn').textContent='Join circle'; return; }
+      const data = gSnap.data();
+      if(!(data.memberIds||[]).includes(state.user.uid)){
+        await updateDoc(gRef, {
+          memberIds: arrayUnion(state.user.uid),
+          [`members.${state.user.uid}`]: {name: state.user.displayName||'You', photo: state.user.photoURL||''}
+        });
+      }
+      closeModal(); toast('Welcome to the circle 💌'); openGroup(groupId);
+    }catch(err){ console.error(err); toast('Something went wrong 💔'); $('#jJoinBtn').disabled=false; $('#jJoinBtn').textContent='Join circle'; }
+  });
+}
+
+/* ============================================================
+   GROUP DETAIL
+   ============================================================ */
+function openGroup(id){
+  state.currentGroupId=id; state.currentGroup=null; state.expenses=[]; state.activity=[];
+  state.currentTab='expenses'; state.filterTag='all'; state.searchQuery='';
+  subscribeGroupDoc(id); subscribeExpenses(id); subscribeActivity(id);
+  renderGroupDetailSkeleton();
+}
+function backToGroups(){
+  if(state.currentGroupUnsub) state.currentGroupUnsub();
+  if(state.expensesUnsub) state.expensesUnsub();
+  if(state.activityUnsub) state.activityUnsub();
+  state.currentGroupId=null; state.currentGroup=null; state.expenses=[]; state.activity=[];
+  renderGroupsList();
+}
+function subscribeGroupDoc(id){
+  state.currentGroupUnsub = onSnapshot(doc(db,'groups',id), d=>{
+    if(!d.exists()){ toast('This circle was removed'); backToGroups(); return; }
+    state.currentGroup = {id:d.id,...d.data()};
+    renderGroupDetail();
+  });
+}
+function subscribeExpenses(id){
+  const q = query(collection(db,'groups',id,'expenses'), orderBy('date','desc'));
+  state.expensesUnsub = onSnapshot(q, snap=>{
+    state.expenses = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(state.currentGroup){
+      if(state.currentTab==='expenses') renderExpenseList();
+      if(state.currentTab==='balances') renderBalancesTab();
+    }
+  }, err=>console.error(err));
+}
+function subscribeActivity(id){
+  const q = query(collection(db,'groups',id,'activity'), orderBy('at','desc'));
+  state.activityUnsub = onSnapshot(q, snap=>{
+    state.activity = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(state.currentTab==='activity') renderActivityTab();
+  }, err=>console.error(err));
+}
+function renderGroupDetailSkeleton(){
+  $('#viewRoot').innerHTML = `<div class="center-loader">💌</div>`;
+}
+function renderGroupDetail(){
+  const g = state.currentGroup; if(!g) return;
+  const memberIds = g.memberIds||[];
+  const stack = memberIds.slice(0,5).map(uid=>avatarHtml(uid,26)).join('');
+  $('#viewRoot').innerHTML = `
+    <div class="group-header">
+      <div class="backrow">
+        <button class="icon-btn" data-action="backToGroups">←</button>
+      </div>
+      <div class="group-title-row">
+        <div class="charm">${g.emoji||'💌'}</div>
+        <h2 class="name">${escapeHtml(g.name)}</h2>
+      </div>
+      <div class="member-row" data-action="openMembers">
+        <div class="avatar-stack">${stack}</div>
+        <span class="lbl">${memberIds.length} member${memberIds.length!==1?'s':''} · invite code ${escapeHtml(g.inviteCode||'')}</span>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn ${state.currentTab==='expenses'?'active':''}" data-action="setTab" data-tab="expenses">🧾 Expenses</button>
+      <button class="tab-btn ${state.currentTab==='balances'?'active':''}" data-action="setTab" data-tab="balances">💗 Balances</button>
+      <button class="tab-btn ${state.currentTab==='activity'?'active':''}" data-action="setTab" data-tab="activity">📔 Activity</button>
+    </div>
+    <div id="tabBody"></div>
+  `;
+  if(state.currentTab==='expenses') renderExpensesTab();
+  else if(state.currentTab==='balances') renderBalancesTab();
+  else renderActivityTab();
+}
+function setTab(tab){
+  state.currentTab = tab;
+  renderGroupDetail();
+}
+
+/* ---- Expenses tab ---- */
+function renderExpensesTab(){
+  const usedTags = Array.from(new Set(state.expenses.filter(e=>e.type!=='settlement').map(e=>e.tag)));
+  $('#tabBody').innerHTML = `
+    <div class="filter-row" id="tagFilterRow">
+      <button class="chip ${state.filterTag==='all'?'active':''}" data-action="filterTag" data-tag="all">All</button>
+      ${usedTags.map(t=>{ const info=tagInfo(t); return `<button class="chip ${state.filterTag===t?'active':''}" data-action="filterTag" data-tag="${t}">${info.emoji} ${info.label}</button>`; }).join('')}
+      <button class="chip ${state.showDeleted?'active':''}" data-action="toggleShowDeleted">🗑 Show deleted</button>
+    </div>
+    <div class="section-pad" style="padding-top:8px;">
+      <input type="text" id="expSearch" placeholder="Search expenses…" style="width:100%;padding:11px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);font-size:14px;">
+    </div>
+    <div id="statStrip"></div>
+    <div id="expenseListContainer"></div>
+    <button class="fab" data-action="openAddExpense">+</button>
+  `;
+  $('#expSearch').value = state.searchQuery;
+  $('#expSearch').addEventListener('input', e=>{ state.searchQuery=e.target.value; renderExpenseList(); });
+  renderExpenseList();
+}
+function renderExpenseList(){
+  let list = state.expenses.filter(e=>!e.deleted || state.showDeleted);
+  if(state.filterTag!=='all') list = list.filter(e=>e.tag===state.filterTag || (e.type==='settlement' && state.filterTag==='__settle'));
+  if(state.searchQuery.trim()) list = list.filter(e=>(e.description||'').toLowerCase().includes(state.searchQuery.trim().toLowerCase()));
+
+  // month stat
+  const now = new Date(); const thisMonth = state.expenses.filter(ex=>!ex.deleted && ex.type!=='settlement' && new Date(ex.date).getMonth()===now.getMonth() && new Date(ex.date).getFullYear()===now.getFullYear());
+  const monthTotal = thisMonth.reduce((s,e)=>s+e.amount,0);
+  const myShare = thisMonth.reduce((s,e)=>s+((e.splits||{})[state.user.uid]||0),0);
+  $('#statStrip').innerHTML = `<div class="stat-strip"><span>This month: ${fmtMoney(monthTotal)}</span><span>Your share: ${fmtMoney(myShare)}</span></div>`;
+
+  const cont = $('#expenseListContainer');
+  if(list.length===0){
+    cont.innerHTML = `<div class="empty-state"><div class="big">🧾</div><p>No expenses here yet. Tap + to add the first one.</p></div>`;
+    return;
+  }
+  // group by day
+  const groups = {};
+  list.forEach(e=>{ const key=fmtDateShort(e.date); (groups[key]=groups[key]||[]).push(e); });
+  let html='';
+  Object.entries(groups).forEach(([day,items])=>{
+    html += `<div class="day-label">${day}</div>`;
+    items.forEach(e=>{ html += e.type==='settlement' ? settlementCardHtml(e) : expenseCardHtml(e); });
+  });
+  cont.innerHTML = html;
+}
+function expenseCardHtml(e){
+  const info = tagInfo(e.tag);
+  const included = Object.keys(e.splits||{});
+  const splitNote = e.splitType==='equal' ? `split equally · ${included.length} people` : `split manually · ${included.length} people`;
+  return `
+  <div class="receipt ${e.deleted?'deleted':''}" data-action="expenseCard" data-id="${e.id}">
+    <div class="washi"></div>
+    <div class="receipt-top">
+      <div class="receipt-desc">
+        <div class="tag-sticker">${info.emoji}</div>
+        <div class="txt">
+          <p class="title">${escapeHtml(e.description)}${e.deleted?' <span style="color:var(--coral); font-size:11px;">(deleted)</span>':''}</p>
+          <div class="meta">${memberName(e.paidBy)} paid · ${new Date(e.date).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}</div>
+        </div>
+      </div>
+      <div class="receipt-amt">${fmtMoney(e.amount)}</div>
+    </div>
+    <div class="receipt-bottom">
+      <span class="receipt-split-note">${splitNote}</span>
+      <div class="receipt-actions">
+        ${e.editCount?`<button class="edited-pill" data-action="viewHistory" data-id="${e.id}">edited ×${e.editCount}</button>`:''}
+        ${!e.deleted?`
+        <button class="mini-btn" data-action="editExpense" data-id="${e.id}" title="Edit">✎</button>
+        <button class="mini-btn" data-action="askDeleteExpense" data-id="${e.id}" title="Delete">🗑</button>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+function settlementCardHtml(e){
+  return `
+  <div class="receipt settle-card" data-action="expenseCard" data-id="${e.id}">
+    <div class="washi" style="background:repeating-linear-gradient(45deg,var(--mint) 0 6px, var(--mint-soft) 6px 12px);"></div>
+    <div class="receipt-top">
+      <div class="receipt-desc">
+        <div class="tag-sticker">💸</div>
+        <div class="txt">
+          <p class="title">${memberName(e.from)} paid ${memberName(e.to)}${e.note?` — ${escapeHtml(e.note)}`:''}</p>
+          <div class="meta">settled up · ${new Date(e.date).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}</div>
+        </div>
+      </div>
+      <div class="receipt-amt">${fmtMoney(e.amount)}</div>
+    </div>
+    <div class="receipt-bottom">
+      <span class="receipt-split-note">payment settled${e.deleted?' · deleted':''}</span>
+      <div class="receipt-actions">
+        ${e.editCount?`<button class="edited-pill" data-action="viewHistory" data-id="${e.id}">edited ×${e.editCount}</button>`:''}
+        ${!e.deleted?`<button class="mini-btn" data-action="askDeleteExpense" data-id="${e.id}" title="Delete">🗑</button>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- Balances tab ---- */
+function renderBalancesTab(){
+  const g = state.currentGroup;
+  const balances = computeBalances();
+  const mine = balances[state.user.uid]||0;
+  const heroTxt = mine>0.004 ? `you're owed ${fmtMoney(mine)}` : mine<-0.004 ? `you owe ${fmtMoney(-mine)}` : `you're all settled up`;
+  const memberRows = Object.keys(g.members||{}).map(uid=>{
+    const b = balances[uid]||0;
+    const cls = b>0.004?'bal-owed':b<-0.004?'bal-owe':'bal-even';
+    const txt = b>0.004?`gets back ${fmtMoney(b)}`:b<-0.004?`owes ${fmtMoney(-b)}`:'settled up';
+    return `<div class="member-balance-row">
+      <div class="mb-left">${avatarHtml(uid,32)}<span>${escapeHtml(memberName(uid))}</span></div>
+      <span class="circle-balance ${cls}">${txt}</span>
+    </div>`;
+  }).join('');
+  const settlements = simplifyDebts(balances);
+  const suggestHtml = settlements.length===0 ? `<div class="empty-state" style="padding:24px;"><div class="big">🎉</div><p>Everyone's settled up — nothing to pay!</p></div>` :
+    settlements.map(s=>`
+      <div class="settle-suggest">
+        <span class="txt">${escapeHtml(memberName(s.from))} → ${escapeHtml(memberName(s.to))}<br><b>${fmtMoney(s.amount)}</b></span>
+        <button class="pill-btn" data-action="quickSettle" data-from="${s.from}" data-to="${s.to}" data-amount="${s.amount}">Settle up</button>
+      </div>`).join('');
+
+  $('#tabBody').innerHTML = `
+    <div class="balance-hero">
+      <div class="lbl">Your balance</div>
+      <div class="amt">${heroTxt}</div>
+    </div>
+    <div class="section-label">Everyone's balance</div>
+    ${memberRows}
+    <div class="section-label">Suggested settlements</div>
+    ${suggestHtml}
+    <div class="section-pad" style="text-align:center;">
+      <button class="pill-btn ghost" data-action="openSettle">💸 Record a payment</button>
+    </div>
+  `;
+}
+
+/* ---- Activity tab ---- */
+function renderActivityTab(){
+  if(state.activity.length===0){
+    $('#tabBody').innerHTML = `<div class="empty-state"><div class="big">📔</div><p>Nothing logged yet. Every add, edit, and delete in this circle will show up here — so there's never a dispute.</p></div>
+    <div class="section-pad" style="text-align:center;"><button class="pill-btn ghost" data-action="exportCsv">⬇ Export expenses as CSV</button></div>`;
+    return;
+  }
+  const icon = a => a==='created'?'✨':a==='edited'?'✏️':a==='deleted'?'🗑️':'💸';
+  let html = state.activity.map((a,idx)=>`
+    <div class="diary-entry">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="diary-dot"></div>${idx<state.activity.length-1?'<div class="diary-line"></div>':''}
+      </div>
+      <div class="diary-content">
+        <span class="who">${icon(a.action)} ${escapeHtml(a.byName||'Someone')}</span>
+        <div class="what">${(a.changes||[]).map(c=>escapeHtml(c)).join('; ')}${a.expenseDesc && a.action!=='created' ? ` <i>(on "${escapeHtml(a.expenseDesc)}")</i>`:''}</div>
+        <div class="when">${fmtWhen(a.at)}</div>
+      </div>
+    </div>
+  `).join('');
+  $('#tabBody').innerHTML = html + `<div class="section-pad" style="text-align:center;"><button class="pill-btn ghost" data-action="exportCsv">⬇ Export expenses as CSV</button></div>`;
+}
+function viewHistory(expenseId){
+  const exp = state.expenses.find(e=>e.id===expenseId);
+  const entries = state.activity.filter(a=>a.expenseId===expenseId).slice().reverse();
+  openModal(`
+    <div class="modal-title">History${exp?` · ${escapeHtml(exp.description)}`:''}</div>
+    ${entries.map(a=>`
+      <div style="margin-bottom:14px;">
+        <div style="font-weight:700;font-size:13.5px;">${escapeHtml(a.byName||'Someone')}</div>
+        <div style="font-size:13px;color:var(--ink-soft);">${(a.changes||[]).map(c=>escapeHtml(c)).join('; ')}</div>
+        <div style="font-size:11px;color:var(--ink-soft);margin-top:2px;">${fmtWhen(a.at)}</div>
+      </div>`).join('') || '<p style="color:var(--ink-soft);font-size:13.5px;">No history yet.</p>'}
+    <div class="modal-actions"><button class="btn-secondary" style="flex:1" data-action="closeModal">Close</button></div>
+  `);
+}
+
+/* ============================================================
+   MEMBERS SHEET
+   ============================================================ */
+function openMembers(){
+  const g = state.currentGroup;
+  const rows = (g.memberIds||[]).map(uid=>{
+    const m = (g.members||{})[uid]||{};
+    return `<div class="member-sheet-row">${avatarHtml(uid,36)}<div style="flex:1;"><div style="font-weight:600;font-size:14px;">${escapeHtml(m.name||'Member')}${uid===state.user.uid?' (you)':''}</div>${uid===g.createdBy?'<div style="font-size:11px;color:var(--ink-soft);">circle creator</div>':''}</div></div>`;
+  }).join('');
+  openModal(`
+    <div class="modal-title">Members</div>
+    ${rows}
+    <div class="field" style="margin-top:16px;">
+      <label>Invite code — share so friends can join</label>
+      <div class="code-display">
+        <span class="code">${escapeHtml(g.inviteCode||'')}</span>
+        <button class="pill-btn" data-action="copyCode" data-code="${escapeHtml(g.inviteCode||'')}">Copy</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="flex:1" data-action="closeModal">Close</button>
+    </div>
+  `);
+}
+function copyCode(code){
+  if(navigator.clipboard){ navigator.clipboard.writeText(code).then(()=>toast('Code copied 💌')); }
+  else toast(code);
+}
+
+/* ============================================================
+   ADD / EDIT EXPENSE
+   ============================================================ */
+function openExpenseModal(expenseId){
+  state.editingExpenseId = expenseId||null;
+  const g = state.currentGroup;
+  const editing = expenseId ? state.expenses.find(e=>e.id===expenseId) : null;
+  const memberIds = g.memberIds||[];
+  const defaultDate = editing ? toLocalInputValue(new Date(editing.date)) : toLocalInputValue(new Date());
+  const paidByDefault = editing ? editing.paidBy : state.user.uid;
+  const splitType = editing ? editing.splitType : 'equal';
+  const includedSet = editing ? new Set(Object.keys(editing.splits||{})) : new Set(memberIds);
+
+  openModal(`
+    <div class="modal-title">${editing?'Edit expense':'Add expense'} 🧾</div>
+    <div class="field"><label>What was it for?</label><input type="text" id="eDesc" maxlength="60" placeholder="Dinner, cab, movie tickets…" value="${editing?escapeHtml(editing.description):''}"></div>
+    <div class="field"><label>Amount</label><input type="number" id="eAmount" min="0" step="0.01" placeholder="0.00" value="${editing?editing.amount:''}"></div>
+    <div class="field"><label>Category</label><div class="chip-picker" id="eTagPicker">
+      ${TAGS.map(t=>`<button class="chip-opt${editing&&editing.tag===t.id||(!editing&&t.id==='other')?' selected':''}" data-tag="${t.id}">${t.emoji} ${t.label}</button>`).join('')}
+    </div></div>
+    <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="eDate" value="${defaultDate}"></div>
+    <div class="field"><label>Paid by</label><select id="ePaidBy">
+      ${memberIds.map(uid=>`<option value="${uid}" ${uid===paidByDefault?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}
+    </select></div>
+    <div class="field"><label>Split</label>
+      <div class="segmented" id="eSplitSeg">
+        <button class="${splitType==='equal'?'active':''}" data-split="equal">Equally</button>
+        <button class="${splitType==='manual'?'active':''}" data-split="manual">Manually</button>
+      </div>
+    </div>
+    <div class="field" id="eSplitBody"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" data-action="closeModal">Cancel</button>
+      <button class="btn-primary" id="eSaveBtn">${editing?'Save changes':'Add expense'}</button>
+    </div>
+  `);
+
+  let selectedTag = editing ? editing.tag : 'other';
+  $('#eTagPicker').addEventListener('click', e=>{
+    const b=e.target.closest('.chip-opt'); if(!b) return;
+    $$('.chip-opt',$('#eTagPicker')).forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected'); selectedTag=b.dataset.tag;
+  });
+
+  let currentSplitType = splitType;
+  function renderSplitBody(){
+    const amt = parseFloat($('#eAmount').value)||0;
+    if(currentSplitType==='equal'){
+      $('#eSplitBody').innerHTML = memberIds.map(uid=>`
+        <div class="member-check-row" data-uid="${uid}">
+          <div class="checkbox ${includedSet.has(uid)?'checked':''}" data-action="toggleEqualMember" data-uid="${uid}">${includedSet.has(uid)?'✓':''}</div>
+          <span class="name">${escapeHtml(memberName(uid))}</span>
+        </div>`).join('') + `<div class="alloc-status alloc-ok" id="eAllocStatus"></div>`;
+      updateEqualPreview();
+    } else {
+      $('#eSplitBody').innerHTML = `
+        <button class="pill-btn ghost" id="eAutoSplit" type="button" style="margin-bottom:10px;">Fill equally as a starting point</button>
+        ${memberIds.map(uid=>{
+          const val = editing && editing.splitType==='manual' && editing.splits && editing.splits[uid]!=null ? editing.splits[uid] : '';
+          return `<div class="member-manual-row" data-uid="${uid}">
+            <span class="name">${escapeHtml(memberName(uid))}</span>
+            <input type="number" step="0.01" min="0" class="manualAmt" data-uid="${uid}" value="${val}" placeholder="0.00">
+          </div>`;
+        }).join('')}
+        <div class="alloc-status" id="eAllocStatus"></div>
+      `;
+      $$('.manualAmt', $('#eSplitBody')).forEach(inp=>inp.addEventListener('input', updateManualStatus));
+      $('#eAutoSplit').addEventListener('click', ()=>{
+        const amt2 = parseFloat($('#eAmount').value)||0;
+        const eq = splitEqually(amt2, memberIds);
+        $$('.manualAmt',$('#eSplitBody')).forEach(inp=>{ inp.value = eq[inp.dataset.uid]!=null ? eq[inp.dataset.uid] : ''; });
+        updateManualStatus();
+      });
+      updateManualStatus();
+    }
+  }
+  function updateEqualPreview(){
+    const amt = parseFloat($('#eAmount').value)||0;
+    const n = includedSet.size;
+    const el = $('#eAllocStatus'); if(!el) return;
+    if(n===0){ el.className='alloc-status alloc-bad'; el.textContent='Select at least one person'; return; }
+    el.className='alloc-status alloc-ok';
+    el.textContent = `${fmtMoney(amt/n)} each × ${n} ${n===1?'person':'people'}`;
+  }
+  function updateManualStatus(){
+    const amt = parseFloat($('#eAmount').value)||0;
+    let sum=0; $$('.manualAmt',$('#eSplitBody')).forEach(inp=>{ sum += parseFloat(inp.value)||0; });
+    const el = $('#eAllocStatus');
+    const diff = Math.round((amt-sum)*100)/100;
+    if(Math.abs(diff)<0.01){ el.className='alloc-status alloc-ok'; el.textContent=`Fully allocated ✓`; }
+    else { el.className='alloc-status alloc-bad'; el.textContent = diff>0 ? `${fmtMoney(diff)} left to allocate` : `${fmtMoney(-diff)} over the total`; }
+  }
+  renderSplitBody();
+  $('#eAmount').addEventListener('input', ()=>{ currentSplitType==='equal'?updateEqualPreview():updateManualStatus(); });
+  $('#eSplitSeg').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    $$('#eSplitSeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+    currentSplitType=b.dataset.split; renderSplitBody();
+  });
+  $('#eSplitBody').addEventListener('click', e=>{
+    const box = e.target.closest('[data-action="toggleEqualMember"]'); if(!box) return;
+    const uid = box.dataset.uid;
+    if(includedSet.has(uid)) includedSet.delete(uid); else includedSet.add(uid);
+    box.classList.toggle('checked'); box.textContent = includedSet.has(uid)?'✓':'';
+    updateEqualPreview();
+  });
+
+  $('#eSaveBtn').addEventListener('click', async ()=>{
+    const description = $('#eDesc').value.trim();
+    const amount = parseFloat($('#eAmount').value);
+    const dateLocal = $('#eDate').value;
+    const paidBy = $('#ePaidBy').value;
+    if(!description){ toast('Add a short description'); return; }
+    if(!amount || amount<=0){ toast('Enter a valid amount'); return; }
+    if(!dateLocal){ toast('Pick a date'); return; }
+    let splits;
+    if(currentSplitType==='equal'){
+      if(includedSet.size===0){ toast('Select who this is split between'); return; }
+      splits = splitEqually(amount, Array.from(includedSet));
+    } else {
+      splits = {};
+      let sum=0;
+      $$('.manualAmt',$('#eSplitBody')).forEach(inp=>{ const v=parseFloat(inp.value)||0; if(v>0) splits[inp.dataset.uid]=v; sum+=v; });
+      if(Math.abs(sum-amount)>0.01){ toast('Manual split must add up to the total'); return; }
+      if(Object.keys(splits).length===0){ toast('Enter at least one split amount'); return; }
+    }
+    $('#eSaveBtn').disabled=true; $('#eSaveBtn').textContent='Saving…';
+    try{
+      const dateISO = new Date(dateLocal).toISOString();
+      if(editing){
+        const ref = doc(db,'groups',state.currentGroupId,'expenses',editing.id);
+        const payload = {description, amount, tag:selectedTag, date:dateISO, paidBy, splitType:currentSplitType, splits, updatedAt:serverTimestamp(), editCount:(editing.editCount||0)+1};
+        await updateDoc(ref, payload);
+        const changes = diffExpense(editing, {...editing, ...payload, date:dateISO});
+        await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
+          expenseId:editing.id, expenseDesc:description, action:'edited', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(), changes
+        });
+        toast('Expense updated 💗');
+      } else {
+        const ref = doc(collection(db,'groups',state.currentGroupId,'expenses'));
+        await setDoc(ref, {type:'expense', description, amount, tag:selectedTag, date:dateISO, paidBy, splitType:currentSplitType, splits, createdBy:state.user.uid, createdAt:serverTimestamp(), updatedAt:serverTimestamp(), editCount:0, deleted:false});
+        await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
+          expenseId:ref.id, expenseDesc:description, action:'created', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(), changes:[`added "${description}" for ${fmtMoney(amount)}`]
+        });
+        toast('Expense added 🎀');
+      }
+      closeModal();
+    }catch(err){ console.error(err); toast('Could not save 💔'); $('#eSaveBtn').disabled=false; $('#eSaveBtn').textContent=editing?'Save changes':'Add expense'; }
+  });
+}
+
+function askDeleteExpense(id){
+  const exp = state.expenses.find(e=>e.id===id);
+  openModal(`
+    <div class="modal-title">Delete this ${exp && exp.type==='settlement'?'payment':'expense'}?</div>
+    <p style="font-size:14px;color:var(--ink-soft);line-height:1.5;">"${escapeHtml(exp?exp.description||'':'')}" will disappear from balances, but a record stays in Activity forever so the group always knows what happened.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" data-action="closeModal">Keep it</button>
+      <button class="btn-primary btn-danger" data-action="confirmDeleteExpense" data-id="${id}">Delete</button>
+    </div>
+  `);
+}
+async function confirmDeleteExpense(id){
+  const exp = state.expenses.find(e=>e.id===id);
+  try{
+    await updateDoc(doc(db,'groups',state.currentGroupId,'expenses',id), {deleted:true, deletedAt:serverTimestamp(), deletedBy:state.user.uid});
+    await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
+      expenseId:id, expenseDesc:exp.description, action:'deleted', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(),
+      changes:[`deleted "${exp.description}" (${fmtMoney(exp.amount)})`]
+    });
+    closeModal(); toast('Deleted — logged in Activity 🗑️');
+  }catch(err){ console.error(err); toast('Could not delete 💔'); }
+}
+
+/* ============================================================
+   SETTLE UP
+   ============================================================ */
+function openSettleModal(prefillFrom, prefillTo, prefillAmount){
+  const g = state.currentGroup;
+  const memberIds = g.memberIds||[];
+  openModal(`
+    <div class="modal-title">Record a payment 💸</div>
+    <div class="field"><label>From</label><select id="sFrom">${memberIds.map(uid=>`<option value="${uid}" ${uid===(prefillFrom||state.user.uid)?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}</select></div>
+    <div class="field"><label>To</label><select id="sTo">${memberIds.map(uid=>`<option value="${uid}" ${uid===prefillTo?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}</select></div>
+    <div class="field"><label>Amount</label><input type="number" id="sAmount" min="0" step="0.01" value="${prefillAmount||''}"></div>
+    <div class="field"><label>Note (optional)</label><input type="text" id="sNote" maxlength="60" placeholder="Paid via UPI…"></div>
+    <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="sDate" value="${toLocalInputValue(new Date())}"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" data-action="closeModal">Cancel</button>
+      <button class="btn-primary" id="sSaveBtn">Save payment</button>
+    </div>
+  `);
+  $('#sSaveBtn').addEventListener('click', async ()=>{
+    const from=$('#sFrom').value, to=$('#sTo').value, amount=parseFloat($('#sAmount').value), note=$('#sNote').value.trim(), dateLocal=$('#sDate').value;
+    if(from===to){ toast('Pick two different people'); return; }
+    if(!amount || amount<=0){ toast('Enter a valid amount'); return; }
+    $('#sSaveBtn').disabled=true; $('#sSaveBtn').textContent='Saving…';
+    try{
+      const dateISO = new Date(dateLocal).toISOString();
+      const ref = doc(collection(db,'groups',state.currentGroupId,'expenses'));
+      await setDoc(ref, {type:'settlement', description:`Payment · ${memberName(from)} → ${memberName(to)}`, from, to, amount, note, date:dateISO, createdBy:state.user.uid, createdAt:serverTimestamp(), updatedAt:serverTimestamp(), editCount:0, deleted:false});
+      await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
+        expenseId:ref.id, expenseDesc:ref.id, action:'settled', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(),
+        changes:[`recorded a payment of ${fmtMoney(amount)} from ${memberName(from)} to ${memberName(to)}`]
+      });
+      closeModal(); toast('Payment recorded 💗');
+    }catch(err){ console.error(err); toast('Could not save 💔'); $('#sSaveBtn').disabled=false; $('#sSaveBtn').textContent='Save payment'; }
+  });
+}
+
+/* ============================================================
+   CSV EXPORT
+   ============================================================ */
+function exportCsv(){
+  const rows = [['Date','Description','Category','Amount','Paid By','Split Type','Deleted']];
+  state.expenses.slice().reverse().forEach(e=>{
+    rows.push([
+      new Date(e.date).toLocaleString(),
+      e.type==='settlement' ? e.description : e.description,
+      e.type==='settlement' ? 'Settlement' : tagInfo(e.tag).label,
+      e.amount,
+      e.type==='settlement' ? memberName(e.from) : memberName(e.paidBy),
+      e.type==='settlement' ? '—' : e.splitType,
+      e.deleted ? 'Yes':'No'
+    ]);
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`${(state.currentGroup.name||'splitsies').replace(/[^a-z0-9]/gi,'_')}_expenses.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  toast('CSV downloaded ⬇️');
+}
+
+/* ============================================================
+   GLOBAL CLICK DELEGATION
+   ============================================================ */
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const action = el.dataset.action;
+  switch(action){
+    case 'signIn': doSignIn(); break;
+    case 'signOut': doSignOut(); break;
+    case 'openAddCircle': openAddCircleModal(); break;
+    case 'openGroup': openGroup(el.dataset.id); break;
+    case 'backToGroups': backToGroups(); break;
+    case 'setTab': setTab(el.dataset.tab); break;
+    case 'filterTag': state.filterTag = el.dataset.tag; renderExpensesTab(); break;
+    case 'toggleShowDeleted': state.showDeleted = !state.showDeleted; renderExpensesTab(); break;
+    case 'openMembers': openMembers(); break;
+    case 'copyCode': copyCode(el.dataset.code); break;
+    case 'closeModal': closeModal(); break;
+    case 'editExpense': openExpenseModal(el.dataset.id); break;
+    case 'askDeleteExpense': askDeleteExpense(el.dataset.id); break;
+    case 'confirmDeleteExpense': confirmDeleteExpense(el.dataset.id); break;
+    case 'viewHistory': viewHistory(el.dataset.id); break;
+    case 'openSettle': openSettleModal(); break;
+    case 'quickSettle': openSettleModal(el.dataset.from, el.dataset.to, el.dataset.amount); break;
+    case 'exportCsv': exportCsv(); break;
+    case 'expenseCard': /* no-op: tap on card body */ break;
+  }
+});
+// FAB for group detail (add expense) is injected dynamically per tab
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-action="openAddExpense"]');
+  if(el) openExpenseModal(null);
+});
+</script>
+</body>
+</html>
