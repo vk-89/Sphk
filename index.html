@@ -339,12 +339,12 @@ import {
 
 /* ---------- 🔧 PASTE YOUR FIREBASE CONFIG HERE 🔧 ---------- */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "YOUR_API_KEY", // <-- Paste your apiKey from Firebase Console here
+  authDomain: "sphk-fe3e8.firebaseapp.com",
+  projectId: "sphk-fe3e8",
+  storageBucket: "sphk-fe3e8.firebasestorage.app",
+  messagingSenderId: "422638341368",
+  appId: "1:422638341368:web:6df8197eef00e0a1983f0d"
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -563,7 +563,6 @@ function subscribeGroups(){
 }
 
 function myBalanceInGroup(group){
-  // quick balance using only this group's expenses if it's the open one; else compute lazily as 0 (loaded on open)
   if(state.currentGroupId===group.id){
     const b = computeBalances();
     return b[state.user.uid]||0;
@@ -1231,7 +1230,6 @@ document.addEventListener('click', e=>{
     case 'expenseCard': /* no-op: tap on card body */ break;
   }
 });
-// FAB for group detail (add expense) is injected dynamically per tab
 document.addEventListener('click', e=>{
   const el = e.target.closest('[data-action="openAddExpense"]');
   if(el) openExpenseModal(null);
