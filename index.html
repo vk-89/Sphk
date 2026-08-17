@@ -333,7 +333,7 @@ import {
   getRedirectResult, onAuthStateChanged, signOut as fbSignOut
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection,
+  getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, addDoc, collection,
   query, where, orderBy, onSnapshot, serverTimestamp, arrayUnion,
   enableIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
@@ -700,33 +700,37 @@ function openFriendsModal(){
     $('#addFriendBtn').disabled = true;
     try{
       const uq = query(collection(db, 'users'), where('email', '==', email));
-      onSnapshot(uq, {
-        next: async (snap) => {
-          if(snap.empty){
-            toast('User not found. Ask them to join Splitsies first! 🥺');
-            $('#addFriendBtn').disabled = false;
-            return;
-          }
-          const friendDoc = snap.docs[0];
-          const frData = friendDoc.data();
-          const newFriend = {
-            uid: friendDoc.id,
-            name: frData.displayName || 'Friend',
-            email: frData.email,
-            photo: frData.photoURL || ''
-          };
-          
-          // Optimistic local add
-          if(!state.friends.some(f => f.uid === newFriend.uid)){
-            state.friends.push(newFriend);
-            storage.set('friends', state.friends);
-          }
-          
-          await setDoc(doc(db, 'users', state.user.uid, 'friends', friendDoc.id), newFriend);
-          toast('Friend added! 💖');
-          closeModal();
-        }
-      });
+      const snap = await getDocs(uq);
+      if(snap.empty){
+        toast('User not found. Ask them to join Splitsies first! 🥺');
+        $('#addFriendBtn').disabled = false;
+        return;
+      }
+      const friendDoc = snap.docs[0];
+      const frData = friendDoc.data();
+
+      if(friendDoc.id === state.user.uid){
+        toast("That's you! 🙈");
+        $('#addFriendBtn').disabled = false;
+        return;
+      }
+
+      const newFriend = {
+        uid: friendDoc.id,
+        name: frData.displayName || 'Friend',
+        email: frData.email,
+        photo: frData.photoURL || ''
+      };
+
+      // Optimistic local add
+      if(!state.friends.some(f => f.uid === newFriend.uid)){
+        state.friends.push(newFriend);
+        storage.set('friends', state.friends);
+      }
+
+      await setDoc(doc(db, 'users', state.user.uid, 'friends', friendDoc.id), newFriend);
+      toast('Friend added! 💖');
+      closeModal();
     } catch(err){
       console.error(err);
       toast('Failed to add friend 💔');
@@ -946,7 +950,7 @@ function renderJoinCircleForm(){
       } else {
         // Fallback: Query groups directly by inviteCode
         const gQuery = query(collection(db, 'groups'), where('inviteCode', '==', code));
-        const gQuerySnap = await getDoc(gQuery);
+        const gQuerySnap = await getDocs(gQuery);
         if(!gQuerySnap.empty){
           groupId = gQuerySnap.docs[0].id;
         }
@@ -1287,13 +1291,37 @@ function viewHistory(expenseId){
 /* Members View */
 function openMembers(){
   const g = state.currentGroup;
-  const rows = (g.memberIds||[]).map(uid=>{
+  const memberIds = g.memberIds||[];
+  const rows = memberIds.map(uid=>{
     const m = (g.members||{})[uid]||{};
     return `<div class="member-sheet-row">${avatarHtml(uid,36)}<div style="flex:1;"><div style="font-weight:600;font-size:14px;">${escapeHtml(m.name||'Member')}${uid===state.user.uid?' (you)':''}</div>${uid===g.createdBy?'<div style="font-size:11px;color:var(--ink-soft);">circle creator</div>':''}</div></div>`;
   }).join('');
+
+  const availableFriends = (state.friends||[]).filter(f=>!memberIds.includes(f.uid));
+  const addFriendsSection = availableFriends.length === 0
+    ? `<p style="font-size:13px;color:var(--ink-soft);margin:0;">${state.friends.length===0 ? 'You have no friends added yet.' : 'All your friends are already in this circle.'} <span data-action="openFriends" style="color:var(--pink-deep);text-decoration:underline;cursor:pointer;">Add a friend</span></p>`
+    : `<div style="max-height:200px;overflow-y:auto;">
+        ${availableFriends.map(f=>`
+          <div class="friend-row">
+            <div class="friend-left">
+              ${f.photo ? `<img class="avatar" src="${escapeHtml(f.photo)}">` : `<div class="avatar" style="background:${avatarColorFor(f.uid)}">${escapeHtml(initials(f.name))}</div>`}
+              <div>
+                <div style="font-weight:600;font-size:14px;">${escapeHtml(f.name)}</div>
+                <div style="font-size:11px;color:var(--ink-soft);">${escapeHtml(f.email)}</div>
+              </div>
+            </div>
+            <button class="pill-btn" data-action="addFriendToGroup" data-uid="${escapeHtml(f.uid)}">Add</button>
+          </div>
+        `).join('')}
+      </div>`;
+
   openModal(`
-    <div class="modal-title">Members (${(g.memberIds||[]).length})</div>
+    <div class="modal-title">Members (${memberIds.length})</div>
     ${rows}
+    <div class="field" style="margin-top:16px;">
+      <label>Add existing friends to this circle</label>
+      ${addFriendsSection}
+    </div>
     <div class="field" style="margin-top:16px;">
       <label>Invite code — share so friends can join</label>
       <div class="code-display">
@@ -1305,6 +1333,35 @@ function openMembers(){
       <button class="btn-secondary" style="flex:1" data-action="closeModal">Close</button>
     </div>
   `);
+}
+
+async function addFriendToGroup(uid){
+  const g = state.currentGroup;
+  if(!g) return;
+  const friend = (state.friends||[]).find(f=>f.uid===uid);
+  if(!friend) return;
+  if((g.memberIds||[]).includes(uid)){ toast('Already in this circle 💌'); return; }
+
+  // Instant optimistic local update
+  g.memberIds = [...(g.memberIds||[]), uid];
+  g.members = { ...(g.members||{}), [uid]: { name: friend.name, photo: friend.photo||'' } };
+  state.groups = state.groups.map(x => x.id===g.id ? g : x);
+  storage.set('groups', state.groups);
+  storage.set(`grp_${g.id}`, g);
+  renderGroupDetail();
+  openMembers();
+  toast(`${friend.name} added to the circle 💌`);
+
+  // Background server sync
+  try {
+    await updateDoc(doc(db,'groups',g.id), {
+      memberIds: arrayUnion(uid),
+      [`members.${uid}`]: { name: friend.name, photo: friend.photo||'' }
+    });
+  } catch(err){
+    console.error(err);
+    toast('Added locally, but sync failed 💔');
+  }
 }
 function copyCode(code){
   if(navigator.clipboard){ navigator.clipboard.writeText(code).then(()=>toast('Code copied 💌')); }
@@ -1670,6 +1727,7 @@ document.addEventListener('click', e=>{
     case 'filterTag': state.filterTag = el.dataset.tag; renderExpensesTab(); break;
     case 'toggleShowDeleted': state.showDeleted = !state.showDeleted; renderExpensesTab(); break;
     case 'openMembers': openMembers(); break;
+    case 'addFriendToGroup': addFriendToGroup(el.dataset.uid); break;
     case 'copyCode': copyCode(el.dataset.code); break;
     case 'closeModal': closeModal(); break;
     case 'openAddExpense': openExpenseModal(null); break;
