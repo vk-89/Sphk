@@ -266,6 +266,7 @@
   .code-display .code{font-family:'Fredoka',sans-serif; font-size:20px; letter-spacing:.12em; color:var(--pink-deep);}
   .member-sheet-row{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);}
   .member-sheet-row:last-child{border-bottom:none;}
+  .badge-dummy{font-size:10px; background:var(--lavender-soft); color:var(--pink-deep); font-weight:700; padding:2px 6px; border-radius:6px; margin-left:6px;}
 
   /* Friends tab list */
   .friend-row{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--paper); border-radius:var(--radius-sm); margin-bottom:8px; border:1px solid var(--line);}
@@ -325,7 +326,7 @@
 
 <script type="module">
 /* ============================================================
-   SPLITSIES — Single File Expense Splitter (Fixed & Enhanced)
+   SPLITSIES — Single File Expense Splitter
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
@@ -498,6 +499,10 @@ function memberName(uid){
   const fr = state.friends.find(f=>f.uid===uid);
   return fr ? fr.name : 'Someone';
 }
+function isDummyMember(uid){
+  const m = state.currentGroup && state.currentGroup.members && state.currentGroup.members[uid];
+  return !!(m && m.isDummy);
+}
 function genCode(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s=''; for(let i=0;i<6;i++) s+=chars[Math.floor(Math.random()*chars.length)];
@@ -626,14 +631,12 @@ function openProfileModal(){
     closeModal();
     toast('Profile updated! ✨');
 
-    // Background update
     setDoc(doc(db, 'users', state.user.uid), {
       displayName: name,
       photoURL: chosenPhoto,
       updatedAt: serverTimestamp()
     }, { merge: true }).catch(console.error);
 
-    // Update in existing circles
     state.groups.forEach(g => {
       if (g.members && g.members[state.user.uid]) {
         updateDoc(doc(db, 'groups', g.id), {
@@ -1023,6 +1026,8 @@ function subscribeGroupDoc(id){
     if(d.exists()){
       state.currentGroup = {id:d.id, ...d.data()};
       storage.set(`grp_${id}`, state.currentGroup);
+      state.groups = state.groups.map(g => g.id === id ? state.currentGroup : g);
+      storage.set('groups', state.groups);
       renderGroupDetail();
     }
   }, err => console.error(err));
@@ -1200,7 +1205,7 @@ function renderBalancesTab(){
     const cls = b>0.004?'bal-owed':b<-0.004?'bal-owe':'bal-even';
     const txt = b>0.004?`gets back ${fmtMoney(b)}`:b<-0.004?`owes ${fmtMoney(-b)}`:'settled up';
     return `<div class="member-balance-row">
-      <div class="mb-left">${avatarHtml(uid,32)}<span>${escapeHtml(memberName(uid))}</span></div>
+      <div class="mb-left">${avatarHtml(uid,32)}<span>${escapeHtml(memberName(uid))}${isDummyMember(uid)?'<span class="badge-dummy">Guest</span>':''}</span></div>
       <span class="circle-balance ${cls}">${txt}</span>
     </div>`;
   }).join('');
@@ -1271,13 +1276,22 @@ function openMembers(){
   const memberIds = g.memberIds||[];
   const rows = memberIds.map(uid=>{
     const m = (g.members||{})[uid]||{};
-    return `<div class="member-sheet-row">${avatarHtml(uid,36)}<div style="flex:1;"><div style="font-weight:600;font-size:14px;">${escapeHtml(m.name||'Member')}${uid===state.user.uid?' (you)':''}</div>${uid===g.createdBy?'<div style="font-size:11px;color:var(--ink-soft);">circle creator</div>':''}</div></div>`;
+    return `<div class="member-sheet-row">
+      ${avatarHtml(uid,36)}
+      <div style="flex:1;">
+        <div style="font-weight:600;font-size:14px;">
+          ${escapeHtml(m.name||'Member')}${uid===state.user.uid?' (you)':''}
+          ${m.isDummy ? '<span class="badge-dummy">Guest / Dummy</span>' : ''}
+        </div>
+        ${uid===g.createdBy?'<div style="font-size:11px;color:var(--ink-soft);">circle creator</div>':''}
+      </div>
+    </div>`;
   }).join('');
 
   const availableFriends = (state.friends||[]).filter(f=>!memberIds.includes(f.uid));
   const addFriendsSection = availableFriends.length === 0
     ? `<p style="font-size:13px;color:var(--ink-soft);margin:0;">${state.friends.length===0 ? 'You have no friends added yet.' : 'All your friends are already in this circle.'} <span data-action="openFriends" style="color:var(--pink-deep);text-decoration:underline;cursor:pointer;">Add a friend</span></p>`
-    : `<div style="max-height:200px;overflow-y:auto;">
+    : `<div style="max-height:160px;overflow-y:auto;">
         ${availableFriends.map(f=>`
           <div class="friend-row">
             <div class="friend-left">
@@ -1296,7 +1310,14 @@ function openMembers(){
     <div class="modal-title">Members (${memberIds.length})</div>
     ${rows}
     <div class="field" style="margin-top:16px;">
-      <label>Add existing friends to this circle</label>
+      <label>Add a Dummy / Guest Member (No account needed)</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="dummyMemberName" placeholder="e.g. Ramesh, Mom, Roommate" style="flex:1;">
+        <button class="pill-btn" id="addDummyMemberBtn">+ Add</button>
+      </div>
+    </div>
+    <div class="field" style="margin-top:16px;">
+      <label>Add friends from your Friends List</label>
       ${addFriendsSection}
     </div>
     <div class="field" style="margin-top:16px;">
@@ -1310,6 +1331,36 @@ function openMembers(){
       <button class="btn-secondary" style="flex:1" data-action="closeModal">Close</button>
     </div>
   `);
+
+  $('#addDummyMemberBtn').addEventListener('click', async () => {
+    const name = $('#dummyMemberName').value.trim();
+    if(!name){ toast('Enter a name for the guest member 🧸'); return; }
+    $('#addDummyMemberBtn').disabled = true;
+    const dummyUid = 'dummy_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+    const dummyAvatar = CARTOON_AVATARS[hashCode(name) % CARTOON_AVATARS.length];
+
+    g.memberIds = [...(g.memberIds||[]), dummyUid];
+    g.members = {
+      ...(g.members||{}),
+      [dummyUid]: { name, photo: dummyAvatar, isDummy: true }
+    };
+
+    state.groups = state.groups.map(x => x.id===g.id ? g : x);
+    storage.set('groups', state.groups);
+    storage.set(`grp_${g.id}`, g);
+    renderGroupDetail();
+    openMembers();
+    toast(`${name} added as a guest! 🧸`);
+
+    try {
+      await updateDoc(doc(db,'groups',g.id), {
+        memberIds: arrayUnion(dummyUid),
+        [`members.${dummyUid}`]: { name, photo: dummyAvatar, isDummy: true }
+      });
+    } catch(err){
+      console.error(err);
+    }
+  });
 }
 
 async function addFriendToGroup(uid){
@@ -1365,7 +1416,7 @@ function openExpenseModal(expenseId){
     </div></div>
     <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="eDate" value="${defaultDate}"></div>
     <div class="field"><label>Paid by</label><select id="ePaidBy">
-      ${memberIds.map(uid=>`<option value="${uid}" ${uid===paidByDefault?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}
+      ${memberIds.map(uid=>`<option value="${uid}" ${uid===paidByDefault?'selected':''}>${escapeHtml(memberName(uid))}${isDummyMember(uid)?' (Guest)':''}</option>`).join('')}
     </select></div>
     <div class="field"><label>Split</label>
       <div class="segmented" id="eSplitSeg">
@@ -1393,7 +1444,7 @@ function openExpenseModal(expenseId){
       $('#eSplitBody').innerHTML = memberIds.map(uid=>`
         <div class="member-check-row" data-uid="${uid}">
           <div class="checkbox ${includedSet.has(uid)?'checked':''}" data-action="toggleEqualMember" data-uid="${uid}">${includedSet.has(uid)?'✓':''}</div>
-          <span class="name">${escapeHtml(memberName(uid))}</span>
+          <span class="name">${escapeHtml(memberName(uid))}${isDummyMember(uid)?'<span class="badge-dummy">Guest</span>':''}</span>
         </div>`).join('') + `<div class="alloc-status alloc-ok" id="eAllocStatus"></div>`;
       updateEqualPreview();
     } else {
@@ -1402,7 +1453,7 @@ function openExpenseModal(expenseId){
         ${memberIds.map(uid=>{
           const val = editing && editing.splitType==='manual' && editing.splits && editing.splits[uid]!=null ? editing.splits[uid] : '';
           return `<div class="member-manual-row" data-uid="${uid}">
-            <span class="name">${escapeHtml(memberName(uid))}</span>
+            <span class="name">${escapeHtml(memberName(uid))}${isDummyMember(uid)?'<span class="badge-dummy">Guest</span>':''}</span>
             <input type="number" step="0.01" min="0" class="manualAmt" data-uid="${uid}" value="${val}" placeholder="0.00">
           </div>`;
         }).join('')}
@@ -1592,8 +1643,8 @@ function openSettleModal(prefillFrom, prefillTo, prefillAmount){
   const memberIds = g.memberIds||[];
   openModal(`
     <div class="modal-title">Record a payment 💸</div>
-    <div class="field"><label>From</label><select id="sFrom">${memberIds.map(uid=>`<option value="${uid}" ${uid===(prefillFrom||state.user.uid)?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}</select></div>
-    <div class="field"><label>To</label><select id="sTo">${memberIds.map(uid=>`<option value="${uid}" ${uid===prefillTo?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}</select></div>
+    <div class="field"><label>From</label><select id="sFrom">${memberIds.map(uid=>`<option value="${uid}" ${uid===(prefillFrom||state.user.uid)?'selected':''}>${escapeHtml(memberName(uid))}${isDummyMember(uid)?' (Guest)':''}</option>`).join('')}</select></div>
+    <div class="field"><label>To</label><select id="sTo">${memberIds.map(uid=>`<option value="${uid}" ${uid===prefillTo?'selected':''}>${escapeHtml(memberName(uid))}${isDummyMember(uid)?' (Guest)':''}</option>`).join('')}</select></div>
     <div class="field"><label>Amount</label><input type="number" id="sAmount" min="0" step="0.01" value="${prefillAmount||''}"></div>
     <div class="field"><label>Note (optional)</label><input type="text" id="sNote" maxlength="60" placeholder="UPI, Cash, Bank…"></div>
     <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="sDate" value="${toLocalInputValue(new Date())}"></div>
