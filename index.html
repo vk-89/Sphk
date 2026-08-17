@@ -325,7 +325,7 @@
 
 <script type="module">
 /* ============================================================
-   SPLITSIES — Optimized Single File Expense Splitter
+   SPLITSIES — Single File Expense Splitter (Fixed & Enhanced)
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
@@ -722,7 +722,6 @@ function openFriendsModal(){
         photo: frData.photoURL || ''
       };
 
-      // Optimistic local add
       if(!state.friends.some(f => f.uid === newFriend.uid)){
         state.friends.push(newFriend);
         storage.set('friends', state.friends);
@@ -782,7 +781,6 @@ onAuthStateChanged(auth, async (user)=>{
     subscribeGroups();
     subscribeFriends();
 
-    // Background sync user document
     setDoc(doc(db,'users',user.uid), {
       displayName: userData.displayName,
       email: userData.email,
@@ -790,7 +788,6 @@ onAuthStateChanged(auth, async (user)=>{
       updatedAt: serverTimestamp()
     }, {merge:true}).catch(console.error);
 
-    // Direct open last used group if exists
     const lastGid = storage.get('last_group_id', null);
     if(lastGid){
       openGroup(lastGid);
@@ -892,41 +889,33 @@ function renderCreateCircleForm(){
   $('#cCreateBtn').addEventListener('click', async ()=>{
     const name = $('#cName').value.trim();
     if(!name){ toast('Give your circle a name 🎀'); return; }
-    
-    const code = genCode();
-    const tempId = 'grp_' + Date.now();
-    const newGroup = {
-      id: tempId,
-      name, emoji: selectedEmoji, currency: $('#cCurrency').value,
-      createdBy: state.user.uid,
-      memberIds: [state.user.uid],
-      members: { [state.user.uid]: { name: state.user.displayName||'You', photo: state.user.photoURL||'' } },
-      inviteCode: code
-    };
+    $('#cCreateBtn').disabled = true;
 
-    // Instant local save
-    state.groups.push(newGroup);
-    storage.set('groups', state.groups);
-    closeModal();
-    toast('Circle created 🎀');
-    openGroup(tempId, newGroup);
-
-    // Background server save
     try {
-      const groupRef = doc(collection(db,'groups'));
-      newGroup.id = groupRef.id;
-      await setDoc(groupRef, {
-        ...newGroup,
+      const code = genCode();
+      const groupRef = doc(collection(db, 'groups'));
+      const newGroup = {
+        id: groupRef.id,
+        name, emoji: selectedEmoji, currency: $('#cCurrency').value,
+        createdBy: state.user.uid,
+        memberIds: [state.user.uid],
+        members: { [state.user.uid]: { name: state.user.displayName||'You', photo: state.user.photoURL||'' } },
+        inviteCode: code,
         createdAt: serverTimestamp()
-      });
-      await setDoc(doc(db,'inviteCodes', code), { groupId: groupRef.id });
-      // Update local with actual ID
-      state.groups = state.groups.map(g => g.id === tempId ? newGroup : g);
+      };
+
+      await setDoc(groupRef, newGroup);
+      await setDoc(doc(db, 'inviteCodes', code), { groupId: groupRef.id }).catch(() => {});
+
+      state.groups.push(newGroup);
       storage.set('groups', state.groups);
-      if(state.currentGroupId === tempId) state.currentGroupId = groupRef.id;
-      storage.set('last_group_id', groupRef.id);
+      closeModal();
+      toast('Circle created 🎀');
+      openGroup(groupRef.id, newGroup);
     } catch(err) {
       console.error(err);
+      toast('Could not create circle 💔');
+      $('#cCreateBtn').disabled = false;
     }
   });
 }
@@ -943,12 +932,14 @@ function renderJoinCircleForm(){
 
     try {
       let groupId = null;
-      // Direct lookup from code doc
-      const codeSnap = await getDoc(doc(db, 'inviteCodes', code));
-      if (codeSnap.exists()) {
-        groupId = codeSnap.data().groupId;
-      } else {
-        // Fallback: Query groups directly by inviteCode
+      try {
+        const codeSnap = await getDoc(doc(db, 'inviteCodes', code));
+        if (codeSnap.exists()) {
+          groupId = codeSnap.data().groupId;
+        }
+      } catch(e){}
+
+      if (!groupId) {
         const gQuery = query(collection(db, 'groups'), where('inviteCode', '==', code));
         const gQuerySnap = await getDocs(gQuery);
         if(!gQuerySnap.empty){
@@ -964,32 +955,19 @@ function renderJoinCircleForm(){
       }
 
       const gRef = doc(db, 'groups', groupId);
-      const gSnap = await getDoc(gRef);
-      if(!gSnap.exists()){
-        toast('This circle no longer exists 💔');
-        $('#jJoinBtn').disabled=false;
-        $('#jJoinBtn').textContent='Join circle';
-        return;
-      }
+      const newMemberData = {
+        name: state.user.displayName || 'You',
+        photo: state.user.photoURL || ''
+      };
 
-      const grpData = { id: gSnap.id, ...gSnap.data() };
-      grpData.memberIds = grpData.memberIds || [];
-      grpData.members = grpData.members || {};
+      await updateDoc(gRef, {
+        memberIds: arrayUnion(state.user.uid),
+        [`members.${state.user.uid}`]: newMemberData
+      });
 
-      if(!grpData.memberIds.includes(state.user.uid)){
-        grpData.memberIds.push(state.user.uid);
-        grpData.members[state.user.uid] = {
-          name: state.user.displayName || 'You',
-          photo: state.user.photoURL || ''
-        };
-        // Background DB sync
-        updateDoc(gRef, {
-          memberIds: arrayUnion(state.user.uid),
-          [`members.${state.user.uid}`]: grpData.members[state.user.uid]
-        }).catch(console.error);
-      }
+      const updatedSnap = await getDoc(gRef);
+      const grpData = { id: updatedSnap.id, ...updatedSnap.data() };
 
-      // Optimistic local add
       state.groups = state.groups.filter(g => g.id !== groupId);
       state.groups.push(grpData);
       storage.set('groups', state.groups);
@@ -1013,7 +991,6 @@ function openGroup(id, preloadedData = null){
   state.currentGroupId = id;
   storage.set('last_group_id', id);
 
-  // Instant load from memory/storage
   state.currentGroup = preloadedData || state.groups.find(g => g.id === id) || storage.get(`grp_${id}`, null);
   state.expenses = storage.get(`exp_${id}`, []);
   state.activity = storage.get(`act_${id}`, []);
@@ -1342,7 +1319,6 @@ async function addFriendToGroup(uid){
   if(!friend) return;
   if((g.memberIds||[]).includes(uid)){ toast('Already in this circle 💌'); return; }
 
-  // Instant optimistic local update
   g.memberIds = [...(g.memberIds||[]), uid];
   g.members = { ...(g.members||{}), [uid]: { name: friend.name, photo: friend.photo||'' } };
   state.groups = state.groups.map(x => x.id===g.id ? g : x);
@@ -1352,7 +1328,6 @@ async function addFriendToGroup(uid){
   openMembers();
   toast(`${friend.name} added to the circle 💌`);
 
-  // Background server sync
   try {
     await updateDoc(doc(db,'groups',g.id), {
       memberIds: arrayUnion(uid),
@@ -1369,7 +1344,7 @@ function copyCode(code){
 }
 
 /* ============================================================
-   ADD / EDIT EXPENSE (INSTANT OPTIMISTIC + BACKGROUND SYNC)
+   ADD / EDIT EXPENSE
    ============================================================ */
 function openExpenseModal(expenseId){
   state.editingExpenseId = expenseId||null;
@@ -1516,7 +1491,6 @@ function openExpenseModal(expenseId){
       editCount: editing ? (editing.editCount||0) + 1 : 0
     };
 
-    // Optimistic Local UI update
     if(editing){
       state.expenses = state.expenses.map(e => e.id === editing.id ? expensePayload : e);
       const changes = diffExpense(editing, expensePayload);
@@ -1548,7 +1522,6 @@ function openExpenseModal(expenseId){
     closeModal();
     toast(editing ? 'Expense updated 💗' : 'Expense added 🎀');
 
-    // Background Firebase write
     try {
       if(editing){
         const ref = doc(db, 'groups', state.currentGroupId, 'expenses', editing.id);
@@ -1602,7 +1575,6 @@ async function confirmDeleteExpense(id){
     toast('Deleted — logged in Activity 🗑️');
   }
 
-  // Background server sync
   try {
     await updateDoc(doc(db,'groups',state.currentGroupId,'expenses',id), {deleted:true, deletedAt:serverTimestamp(), deletedBy:state.user.uid});
     await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
@@ -1650,7 +1622,6 @@ function openSettleModal(prefillFrom, prefillTo, prefillAmount){
       editCount: 0
     };
 
-    // Instant local save
     state.expenses.unshift(paymentObj);
     state.activity.unshift({
       id: 'act_' + Date.now(),
@@ -1669,13 +1640,12 @@ function openSettleModal(prefillFrom, prefillTo, prefillAmount){
     closeModal();
     toast('Payment recorded 💗');
 
-    // Background Firebase write
     try {
       const ref = doc(collection(db,'groups',state.currentGroupId,'expenses'));
       paymentObj.id = ref.id;
       await setDoc(ref, { ...paymentObj, createdBy:state.user.uid, createdAt:serverTimestamp(), updatedAt:serverTimestamp() });
       await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
-        expenseId:ref.id, expenseDesc:ref.id, action:'settled', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(),
+        expenseId:ref.id, expenseDesc:desc, action:'settled', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(),
         changes:[`recorded payment of ${fmtMoney(amount)} from ${memberName(from)} to ${memberName(to)}`]
       });
     }catch(err){ console.error(err); }
@@ -1708,7 +1678,7 @@ function exportCsv(){
 }
 
 /* ============================================================
-   EVENT DELEGATION (CRITICAL FIXES APPLIED)
+   EVENT DELEGATION
    ============================================================ */
 document.addEventListener('click', e=>{
   const el = e.target.closest('[data-action]');
