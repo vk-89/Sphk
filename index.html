@@ -52,7 +52,7 @@
 
   #app{max-width:520px; margin:0 auto; min-height:100dvh; position:relative; padding-bottom:90px;}
 
-  /* ---------- Auth screen ---------- */
+  /* Auth screen */
   #authScreen{
     min-height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:center;
     padding:32px 28px; text-align:center; gap:18px;
@@ -77,7 +77,7 @@
   .auth-feature{font-size:12.5px; color:var(--ink-soft); display:flex; flex-direction:column; align-items:center; gap:4px; width:78px;}
   .auth-feature span.ico{font-size:20px;}
 
-  /* ---------- Top bar ---------- */
+  /* Top bar */
   .topbar{
     display:flex; align-items:center; justify-content:space-between; padding:18px 20px 10px;
     position:sticky; top:0; z-index:20; backdrop-filter:blur(8px); background:rgba(255,249,245,0.85);
@@ -88,6 +88,7 @@
   .avatar{
     width:34px; height:34px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow:0 0 0 2px var(--pink-soft);
     display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; background:var(--pink);
+    overflow:hidden;
   }
   .icon-btn{
     width:38px; height:38px; border-radius:50%; border:none; background:var(--paper); display:flex; align-items:center; justify-content:center;
@@ -95,16 +96,16 @@
   }
   .icon-btn:active{transform:scale(.92);}
 
-  /* ---------- Sections / headers ---------- */
+  /* Sections */
   .section-pad{padding:6px 20px 20px;}
   .page-title{font-size:24px; margin:6px 0 2px;}
   .page-sub{font-family:'Caveat',cursive; color:var(--pink-deep); font-size:19px; margin:0 0 18px;}
 
-  /* ---------- Groups list ---------- */
+  /* Groups list */
   .circle-card{
     position:relative; background:var(--paper); border-radius:var(--radius); padding:16px 16px 16px 14px;
     display:flex; align-items:center; gap:14px; margin-bottom:14px; box-shadow:var(--shadow-sm);
-    border:1px solid var(--line); animation:riseIn .35s ease both;
+    border:1px solid var(--line); animation:riseIn .35s ease both; cursor:pointer;
   }
   @keyframes riseIn{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
   .charm{
@@ -126,7 +127,7 @@
   .empty-state .big{font-size:44px; margin-bottom:10px;}
   .empty-state p{font-size:14.5px; line-height:1.5;}
 
-  /* ---------- FAB ---------- */
+  /* FAB */
   .fab{
     position:fixed; right:24px; bottom:24px; width:58px; height:58px; border-radius:50%; border:none;
     background:linear-gradient(135deg,var(--pink),var(--pink-deep)); color:#fff; font-size:26px;
@@ -134,9 +135,8 @@
     z-index:30; max-width:520px; margin:0 auto;
   }
   .fab:active{transform:scale(.9);}
-  .fab-wide{width:auto; border-radius:999px; padding:0 22px; gap:8px; font-size:15px; font-weight:600; font-family:'Quicksand',sans-serif;}
 
-  /* ---------- Group detail header ---------- */
+  /* Group detail header */
   .group-header{padding:14px 20px 0;}
   .backrow{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
   .group-title-row{display:flex; align-items:center; gap:12px;}
@@ -153,7 +153,7 @@
   }
   .tab-btn.active{background:var(--paper); color:var(--pink-deep); border-color:var(--line); box-shadow:var(--shadow-sm);}
 
-  /* ---------- Filter row ---------- */
+  /* Filters */
   .filter-row{display:flex; gap:8px; overflow-x:auto; padding:14px 20px 4px; scrollbar-width:none;}
   .filter-row::-webkit-scrollbar{display:none;}
   .chip{
@@ -164,7 +164,7 @@
 
   .stat-strip{margin:14px 20px 4px; background:linear-gradient(135deg,var(--pink-soft),var(--lavender-soft)); border-radius:var(--radius-sm); padding:12px 16px; display:flex; justify-content:space-between; font-size:12.5px; color:var(--pink-deep); font-weight:600;}
 
-  /* ---------- Receipt / expense card ---------- */
+  /* Receipt / expense card */
   .day-label{font-family:'Caveat',cursive; font-size:19px; color:var(--pink-deep); margin:18px 20px 6px;}
   .receipt{
     position:relative; margin:0 20px 16px; background:var(--paper); border-radius:16px 16px 4px 4px; padding:15px 16px 16px;
@@ -191,7 +191,7 @@
   .edited-pill{font-size:10.5px; background:var(--lavender-soft); color:var(--pink-deep); padding:2px 8px; border-radius:999px; font-weight:700; border:none;}
   .settle-card{background:linear-gradient(135deg,var(--mint-soft),var(--pink-soft)); border-style:dashed;}
 
-  /* ---------- Balances tab ---------- */
+  /* Balances */
   .balance-hero{margin:16px 20px; background:linear-gradient(135deg,var(--pink),var(--lavender)); border-radius:var(--radius); padding:22px 20px; color:#fff; box-shadow:var(--shadow);}
   .balance-hero .lbl{font-size:12.5px; opacity:.85; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
   .balance-hero .amt{font-family:'Fredoka',sans-serif; font-size:34px; margin-top:4px;}
@@ -203,11 +203,11 @@
     border:none; background:linear-gradient(135deg,var(--pink),var(--pink-deep)); color:#fff; font-weight:700;
     padding:8px 16px; border-radius:999px; font-size:12.5px; white-space:nowrap;
   }
-  .pill-btn.ghost{background:var(--cream); color:var(--pink-deep);}
+  .pill-btn.ghost{background:var(--cream); color:var(--pink-deep); border:1.5px solid var(--line);}
   .pill-btn:active{transform:scale(.94);}
   .section-label{margin:22px 20px 8px; font-size:13px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em;}
 
-  /* ---------- Activity tab ---------- */
+  /* Activity */
   .diary-entry{display:flex; gap:12px; margin:0 20px 16px;}
   .diary-dot{width:10px; height:10px; border-radius:50%; background:var(--pink); margin-top:6px; min-width:10px;}
   .diary-line{width:2px; background:var(--line); flex:1; margin:2px auto;}
@@ -216,7 +216,7 @@
   .diary-content .what{font-size:13.5px; color:var(--ink); line-height:1.5;}
   .diary-content .when{font-size:11px; color:var(--ink-soft); margin-top:2px;}
 
-  /* ---------- Modal ---------- */
+  /* Modals */
   .modal-overlay{
     position:fixed; inset:0; background:rgba(62,47,58,0.45); display:flex; align-items:flex-end; justify-content:center;
     z-index:100; opacity:0; pointer-events:none; transition:opacity .2s ease;
@@ -227,7 +227,7 @@
     padding:10px 20px 26px; transform:translateY(30px); transition:transform .25s ease; box-shadow:0 -10px 40px rgba(0,0,0,0.2);
   }
   .modal-overlay.open .modal-sheet{transform:translateY(0);}
-  .modal-handle{width:38px; height:5px; background:var(--line); border-radius:999px; margin:8px auto 14px;}
+  .modal-handle{width:38px; height:5px; background:var(--line); border-radius:999px; margin:8px auto 14px; cursor:pointer;}
   .modal-title{font-size:19px; margin:0 0 16px; display:flex; align-items:center; justify-content:space-between;}
   .field{margin-bottom:14px;}
   .field label{font-size:12.5px; font-weight:700; color:var(--ink-soft); display:block; margin-bottom:6px;}
@@ -267,18 +267,17 @@
   .member-sheet-row{display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line);}
   .member-sheet-row:last-child{border-bottom:none;}
 
-  /* ---------- Toast ---------- */
+  /* Friends tab list */
+  .friend-row{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--paper); border-radius:var(--radius-sm); margin-bottom:8px; border:1px solid var(--line);}
+  .friend-left{display:flex; align-items:center; gap:10px;}
+
+  /* Toast */
   #toastHost{position:fixed; bottom:96px; left:0; right:0; display:flex; flex-direction:column; align-items:center; gap:8px; z-index:200; pointer-events:none;}
   .toast{
     background:var(--ink); color:#fff; padding:11px 20px; border-radius:999px; font-size:13.5px; font-weight:600;
     box-shadow:0 8px 22px rgba(0,0,0,0.25); animation:toastIn .25s ease both;
   }
   @keyframes toastIn{from{opacity:0; transform:translateY(10px);}to{opacity:1; transform:translateY(0);}}
-
-  /* ---------- Skeletons ---------- */
-  .skel{background:linear-gradient(90deg,#F6E6ED 25%,#FBF0F4 37%,#F6E6ED 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; border-radius:var(--radius);}
-  @keyframes shimmer{0%{background-position:100% 50%}100%{background-position:0 50%}}
-  .skel-card{height:78px; margin:0 20px 14px;}
 
   .hidden{display:none !important;}
   .center-loader{display:flex; align-items:center; justify-content:center; min-height:60vh; font-size:30px;}
@@ -292,25 +291,27 @@
     <div class="auth-charm">💌</div>
     <h1>Splitsies</h1>
     <p class="tagline">split the bill, not the friendship</p>
-    <p>Track shared expenses with your people — split evenly or your own way, and every edit stays visible so there's never a "wait, who changed this?" moment.</p>
+    <p>Track shared expenses with your people offline & online — instant zero-lag updates, cartoon avatars, and rock-solid history.</p>
     <button class="btn-google" data-action="signIn">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.9 5.1 29.7 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 8 3l6-6C34.9 5.1 29.7 3 24 3c-7.4 0-13.8 4.1-17.1 10.1z"/><path fill="#4CAF50" d="M24 45c5.6 0 10.7-2.1 14.5-5.6l-6.7-5.5C29.7 35.6 27 36.5 24 36.5c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.2 40.9 16 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.4l6.7 5.5C41.9 35.6 45 30.5 45 24c0-1.4-.1-2.7-.4-3.5z"/></svg>
       Continue with Google
     </button>
     <div class="auth-features">
-      <div class="auth-feature"><span class="ico">🧾</span>Split evenly or custom</div>
-      <div class="auth-feature"><span class="ico">🕊️</span>Every edit stays visible</div>
-      <div class="auth-feature"><span class="ico">💖</span>Data kept forever</div>
+      <div class="auth-feature"><span class="ico">⚡</span>Zero-lag Local DB</div>
+      <div class="auth-feature"><span class="ico">🧸</span>Cartoon Avatars</div>
+      <div class="auth-feature"><span class="ico">👭</span>Friends & Circles</div>
     </div>
   </div>
 
   <!-- MAIN APP -->
   <div id="mainScreen" class="hidden">
     <div class="topbar">
-      <div class="brand">💌 <b>Splitsies</b></div>
+      <div class="brand" data-action="backToGroups" style="cursor:pointer;">💌 <b>Splitsies</b></div>
       <div class="user-chip">
+        <button class="icon-btn" data-action="openFriends" title="Friends">👥</button>
+        <button class="icon-btn" data-action="openProfileModal" title="Edit Avatar">🎨</button>
         <button class="icon-btn" data-action="signOut" title="Sign out">⎋</button>
-        <img class="avatar" id="topAvatar">
+        <div id="topAvatarSlot" style="cursor:pointer;" data-action="openProfileModal"></div>
       </div>
     </div>
     <div id="viewRoot"></div>
@@ -324,8 +325,7 @@
 
 <script type="module">
 /* ============================================================
-   SPLITSIES — single-file expense splitter
-   Firebase v10 modular SDK (Auth + Firestore)
+   SPLITSIES — Optimized Single File Expense Splitter
    ============================================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
@@ -334,24 +334,51 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection,
-  query, where, orderBy, onSnapshot, serverTimestamp, arrayUnion
+  query, where, orderBy, onSnapshot, serverTimestamp, arrayUnion,
+  enableIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-/* ---------- 🔧 PASTE YOUR FIREBASE CONFIG HERE 🔧 ---------- */
 const firebaseConfig = {
-  apiKey: "AIzaSyA2lR9J9RKnPN6vjMf5q69GdGvzzZyN4Ck", // <-- Paste your apiKey from Firebase Console here
+  apiKey: "AIzaSyA2lR9J9RKnPN6vjMf5q69GdGvzzZyN4Ck",
   authDomain: "sphk-fe3e8.firebaseapp.com",
   projectId: "sphk-fe3e8",
   storageBucket: "sphk-fe3e8.firebasestorage.app",
   messagingSenderId: "422638341368",
   appId: "1:422638341368:web:6df8197eef00e0a1983f0d"
 };
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Enable offline persistence in Firestore
+try {
+  enableIndexedDbPersistence(db).catch(err => {
+    if (err.code === 'failed-precondition') {
+      console.warn('Persistence failed: Multiple tabs open');
+    } else if (err.code === 'unimplemented') {
+      console.warn('Persistence not supported by browser');
+    }
+  });
+} catch(e) {}
+
 const provider = new GoogleAuthProvider();
 
-/* ---------- constants ---------- */
+/* ---------- CONSTANTS ---------- */
+const CARTOON_AVATARS = [
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Lucky',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Coco',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Buster',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Felix',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Bella',
+  'https://api.dicebear.com/7.x/adventurer/svg?seed=Milo',
+  'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Spark',
+  'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Bubbles',
+  'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Sunny',
+  'https://api.dicebear.com/7.x/lorelei/svg?seed=Daisy',
+  'https://api.dicebear.com/7.x/lorelei/svg?seed=Oliver'
+];
+
 const TAGS = [
   {id:'food', label:'Food', emoji:'🍜'},
   {id:'travel', label:'Travel', emoji:'✈️'},
@@ -367,24 +394,52 @@ const GROUP_EMOJIS = ['👛','💌','🎀','🧁','🍡','🌷','🦄','🍭','�
 const CURRENCIES = ['₹','$','€','£','¥'];
 const AVATAR_PALETTE = ['#FF6FA5','#C8A8F0','#4FB894','#FF7A66','#F5B94B','#5AA9E6','#E67ACB','#8C7B8A'];
 
-/* ---------- state ---------- */
-const state = {
-  user:null, groups:[], groupsUnsub:null,
-  currentGroupId:null, currentGroup:null, currentGroupUnsub:null,
-  expenses:[], expensesUnsub:null,
-  activity:[], activityUnsub:null,
-  currentTab:'expenses', filterTag:'all', searchQuery:'', showDeleted:false,
-  editingExpenseId:null
+/* ---------- LOCAL STORAGE HELPERS ---------- */
+const storage = {
+  get: (key, fallback) => {
+    try { const v = localStorage.getItem(`splitsies_${key}`); return v ? JSON.parse(v) : fallback; }
+    catch(e) { return fallback; }
+  },
+  set: (key, val) => {
+    try { localStorage.setItem(`splitsies_${key}`, JSON.stringify(val)); }
+    catch(e) {}
+  },
+  remove: (key) => {
+    try { localStorage.removeItem(`splitsies_${key}`); } catch(e) {}
+  }
 };
 
-/* ---------- tiny utils ---------- */
-const $ = (sel,root=document)=>root.querySelector(sel);
-const $$ = (sel,root=document)=>Array.from(root.querySelectorAll(sel));
-function escapeHtml(str){
-  return String(str==null?'':str).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* ---------- APPLICATION STATE ---------- */
+const state = {
+  user: storage.get('user', null),
+  groups: storage.get('groups', []),
+  groupsUnsub: null,
+  currentGroupId: storage.get('last_group_id', null),
+  currentGroup: null,
+  currentGroupUnsub: null,
+  expenses: [],
+  expensesUnsub: null,
+  activity: [],
+  activityUnsub: null,
+  friends: storage.get('friends', []),
+  friendsUnsub: null,
+  currentTab: 'expenses',
+  filterTag: 'all',
+  searchQuery: '',
+  showDeleted: false,
+  editingExpenseId: null
+};
+
+/* ---------- UTILS ---------- */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+function escapeHtml(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function tagInfo(id){ return TAGS.find(t=>t.id===id) || TAGS[TAGS.length-1]; }
 function currencySymbol(){ return (state.currentGroup && state.currentGroup.currency) || '₹'; }
+
 function fmtMoney(n){
   const v = Math.round((n||0)*100)/100;
   return currencySymbol() + v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -407,8 +462,8 @@ function fmtWhen(ts){
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   return d.toLocaleDateString(undefined,{day:'numeric',month:'short'}) + ' · ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
 }
-function toLocalInputValue(d=new Date()){
-  const pad = n=>String(n).padStart(2,'0');
+function toLocalInputValue(d = new Date()){
+  const pad = n => String(n).padStart(2,'0');
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 function initials(name){
@@ -417,19 +472,31 @@ function initials(name){
 }
 function hashCode(str){ let h=0; for(let i=0;i<str.length;i++){h=(h*31+str.charCodeAt(i))|0;} return Math.abs(h); }
 function avatarColorFor(uid){ return AVATAR_PALETTE[hashCode(uid||'x') % AVATAR_PALETTE.length]; }
+
 function avatarHtml(uid, size=34){
-  const m = (state.currentGroup && state.currentGroup.members && state.currentGroup.members[uid]) ||
-            (state.user && state.user.uid===uid ? {name:state.user.displayName, photo:state.user.photoURL} : null);
-  const name = m ? m.name : 'Member';
-  const photo = m ? m.photo : '';
-  const style = `width:${size}px;height:${size}px;min-width:${size}px;font-size:${Math.round(size*0.38)}px;`;
+  let photo = '';
+  let name = 'Member';
+  if(state.currentGroup && state.currentGroup.members && state.currentGroup.members[uid]){
+    photo = state.currentGroup.members[uid].photo || '';
+    name = state.currentGroup.members[uid].name || 'Member';
+  } else if(state.user && state.user.uid === uid){
+    photo = state.user.photoURL || '';
+    name = state.user.displayName || 'You';
+  } else {
+    const fr = state.friends.find(f => f.uid === uid);
+    if(fr){ photo = fr.photo; name = fr.name; }
+  }
+  const style = `width:${size}px;height:${size}px;min-width:${size}px;font-size:${Math.round(size*0.38)}px;border-radius:50%;`;
   if(photo) return `<img class="avatar" style="${style}" src="${escapeHtml(photo)}" alt="${escapeHtml(name)}">`;
   return `<div class="avatar" style="${style}background:${avatarColorFor(uid)}">${escapeHtml(initials(name))}</div>`;
 }
+
 function memberName(uid){
   if(state.user && state.user.uid===uid) return 'You';
   const m = state.currentGroup && state.currentGroup.members && state.currentGroup.members[uid];
-  return m ? m.name : 'Someone';
+  if(m) return m.name;
+  const fr = state.friends.find(f=>f.uid===uid);
+  return fr ? fr.name : 'Someone';
 }
 function genCode(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -444,7 +511,7 @@ function toast(msg){
   setTimeout(()=>{ el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.remove(),300); }, 2400);
 }
 
-/* ---------- split math ---------- */
+/* ---------- MATH & LOGIC ---------- */
 function splitEqually(amount, uids){
   const cents = Math.round(amount*100);
   const n = uids.length || 1;
@@ -458,6 +525,7 @@ function splitEqually(amount, uids){
   });
   return result;
 }
+
 function computeBalances(){
   const balances = {};
   Object.keys((state.currentGroup&&state.currentGroup.members)||{}).forEach(uid=>balances[uid]=0);
@@ -472,6 +540,7 @@ function computeBalances(){
   });
   return balances;
 }
+
 function simplifyDebts(balances){
   const creditors=[], debtors=[];
   Object.entries(balances).forEach(([uid,bal])=>{
@@ -491,6 +560,7 @@ function simplifyDebts(balances){
   }
   return txns;
 }
+
 function diffExpense(oldE,newE){
   const changes=[];
   if(oldE.description!==newE.description) changes.push(`renamed "${oldE.description}" → "${newE.description}"`);
@@ -502,9 +572,9 @@ function diffExpense(oldE,newE){
   return changes.length?changes:['made a small edit'];
 }
 
-/* ---------- modal ---------- */
+/* ---------- MODAL ---------- */
 function openModal(html){
-  $('#modalSheet').innerHTML = `<div class="modal-handle"></div>${html}`;
+  $('#modalSheet').innerHTML = `<div class="modal-handle" data-action="closeModal"></div>${html}`;
   $('#modalOverlay').classList.add('open');
 }
 function closeModal(){
@@ -513,8 +583,160 @@ function closeModal(){
 }
 $('#modalOverlay').addEventListener('click', e=>{ if(e.target.id==='modalOverlay') closeModal(); });
 
+/* ---------- PROFILE & CARTOON AVATARS ---------- */
+function openProfileModal(){
+  const user = state.user;
+  openModal(`
+    <div class="modal-title">Customize Profile 🎨</div>
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="profName" value="${escapeHtml(user.displayName||'')}">
+    </div>
+    <div class="field">
+      <label>Choose a Cartoon Avatar</label>
+      <div class="emoji-pick-grid" id="avatarPickerGrid">
+        ${CARTOON_AVATARS.map(url => `
+          <div class="emoji-pick ${user.photoURL === url ? 'selected' : ''}" data-url="${url}" style="padding:4px;cursor:pointer;">
+            <img src="${url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" data-action="closeModal">Cancel</button>
+      <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
+    </div>
+  `);
+
+  let chosenPhoto = user.photoURL || CARTOON_AVATARS[0];
+  $('#avatarPickerGrid').addEventListener('click', e => {
+    const pick = e.target.closest('.emoji-pick');
+    if (!pick) return;
+    $$('.emoji-pick', $('#avatarPickerGrid')).forEach(el => el.classList.remove('selected'));
+    pick.classList.add('selected');
+    chosenPhoto = pick.dataset.url;
+  });
+
+  $('#saveProfileBtn').addEventListener('click', async () => {
+    const name = $('#profName').value.trim() || 'Anonymous';
+    state.user.displayName = name;
+    state.user.photoURL = chosenPhoto;
+    storage.set('user', state.user);
+    updateTopAvatar();
+    closeModal();
+    toast('Profile updated! ✨');
+
+    // Background update
+    setDoc(doc(db, 'users', state.user.uid), {
+      displayName: name,
+      photoURL: chosenPhoto,
+      updatedAt: serverTimestamp()
+    }, { merge: true }).catch(console.error);
+
+    // Update in existing circles
+    state.groups.forEach(g => {
+      if (g.members && g.members[state.user.uid]) {
+        updateDoc(doc(db, 'groups', g.id), {
+          [`members.${state.user.uid}.name`]: name,
+          [`members.${state.user.uid}.photo`]: chosenPhoto
+        }).catch(()=>{});
+      }
+    });
+  });
+}
+
+function updateTopAvatar(){
+  const slot = $('#topAvatarSlot');
+  if(!slot || !state.user) return;
+  slot.innerHTML = avatarHtml(state.user.uid, 36);
+}
+
+/* ---------- FRIENDS FEATURE ---------- */
+function subscribeFriends(){
+  if(!state.user) return;
+  const q = collection(db, 'users', state.user.uid, 'friends');
+  state.friendsUnsub = onSnapshot(q, snap => {
+    state.friends = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    storage.set('friends', state.friends);
+  }, e=>console.error(e));
+}
+
+function openFriendsModal(){
+  const friendCards = state.friends.length === 0 ?
+    `<div class="empty-state" style="padding:20px 0;"><div class="big">👭</div><p>No friends added yet. Add your buddies by email to easily invite them to circles!</p></div>` :
+    state.friends.map(f => `
+      <div class="friend-row">
+        <div class="friend-left">
+          ${f.photo ? `<img class="avatar" src="${escapeHtml(f.photo)}">` : `<div class="avatar" style="background:${avatarColorFor(f.uid)}">${escapeHtml(initials(f.name))}</div>`}
+          <div>
+            <div style="font-weight:600;font-size:14px;">${escapeHtml(f.name)}</div>
+            <div style="font-size:11px;color:var(--ink-soft);">${escapeHtml(f.email)}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+  openModal(`
+    <div class="modal-title">Your Friends 👥</div>
+    <div class="field">
+      <label>Add Friend by Email</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="friendEmail" placeholder="friend@example.com" style="flex:1;">
+        <button class="pill-btn" id="addFriendBtn">Add</button>
+      </div>
+    </div>
+    <div class="section-label" style="margin:16px 0 8px;">Friend List</div>
+    <div style="max-height:240px;overflow-y:auto;">
+      ${friendCards}
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="flex:1;" data-action="closeModal">Close</button>
+    </div>
+  `);
+
+  $('#addFriendBtn').addEventListener('click', async () => {
+    const email = $('#friendEmail').value.trim().toLowerCase();
+    if(!email){ toast('Enter an email address 💌'); return; }
+    $('#addFriendBtn').disabled = true;
+    try{
+      const uq = query(collection(db, 'users'), where('email', '==', email));
+      onSnapshot(uq, {
+        next: async (snap) => {
+          if(snap.empty){
+            toast('User not found. Ask them to join Splitsies first! 🥺');
+            $('#addFriendBtn').disabled = false;
+            return;
+          }
+          const friendDoc = snap.docs[0];
+          const frData = friendDoc.data();
+          const newFriend = {
+            uid: friendDoc.id,
+            name: frData.displayName || 'Friend',
+            email: frData.email,
+            photo: frData.photoURL || ''
+          };
+          
+          // Optimistic local add
+          if(!state.friends.some(f => f.uid === newFriend.uid)){
+            state.friends.push(newFriend);
+            storage.set('friends', state.friends);
+          }
+          
+          await setDoc(doc(db, 'users', state.user.uid, 'friends', friendDoc.id), newFriend);
+          toast('Friend added! 💖');
+          closeModal();
+        }
+      });
+    } catch(err){
+      console.error(err);
+      toast('Failed to add friend 💔');
+      $('#addFriendBtn').disabled = false;
+    }
+  });
+}
+
 /* ============================================================
-   AUTH
+   AUTH LIFECYCLE
    ============================================================ */
 async function doSignIn(){
   try{ await signInWithPopup(auth, provider); }
@@ -529,45 +751,67 @@ async function doSignOut(){
   if(state.currentGroupUnsub) state.currentGroupUnsub();
   if(state.expensesUnsub) state.expensesUnsub();
   if(state.activityUnsub) state.activityUnsub();
+  if(state.friendsUnsub) state.friendsUnsub();
+  storage.remove('user');
+  storage.remove('last_group_id');
+  state.user = null;
+  state.currentGroupId = null;
   await fbSignOut(auth);
 }
 getRedirectResult(auth).catch(()=>{});
 
 onAuthStateChanged(auth, async (user)=>{
   if(user){
-    state.user = user;
-    await setDoc(doc(db,'users',user.uid), {
-      displayName:user.displayName||'', email:user.email||'', photoURL:user.photoURL||'', updatedAt:serverTimestamp()
-    }, {merge:true});
+    const userData = {
+      uid: user.uid,
+      displayName: user.displayName || 'Friend',
+      email: user.email || '',
+      photoURL: user.photoURL || CARTOON_AVATARS[0]
+    };
+    state.user = userData;
+    storage.set('user', userData);
+
     $('#authScreen').classList.add('hidden');
     $('#mainScreen').classList.remove('hidden');
-    $('#topAvatar').src = user.photoURL || '';
+    updateTopAvatar();
+    
     subscribeGroups();
-    renderGroupsList();
+    subscribeFriends();
+
+    // Background sync user document
+    setDoc(doc(db,'users',user.uid), {
+      displayName: userData.displayName,
+      email: userData.email,
+      photoURL: userData.photoURL,
+      updatedAt: serverTimestamp()
+    }, {merge:true}).catch(console.error);
+
+    // Direct open last used group if exists
+    const lastGid = storage.get('last_group_id', null);
+    if(lastGid){
+      openGroup(lastGid);
+    } else {
+      renderGroupsList();
+    }
   } else {
-    state.user=null;
+    state.user = null;
+    storage.remove('user');
     $('#authScreen').classList.remove('hidden');
     $('#mainScreen').classList.add('hidden');
   }
 });
 
 /* ============================================================
-   GROUPS
+   GROUPS (CIRCLES)
    ============================================================ */
 function subscribeGroups(){
+  if(!state.user) return;
   const q = query(collection(db,'groups'), where('memberIds','array-contains', state.user.uid));
   state.groupsUnsub = onSnapshot(q, snap=>{
-    state.groups = snap.docs.map(d=>({id:d.id,...d.data()}));
+    state.groups = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    storage.set('groups', state.groups);
     if(!state.currentGroupId) renderGroupsList();
-  }, err=>{ console.error(err); toast('Could not load your circles 💔'); });
-}
-
-function myBalanceInGroup(group){
-  if(state.currentGroupId===group.id){
-    const b = computeBalances();
-    return b[state.user.uid]||0;
-  }
-  return null;
+  }, err=>{ console.error(err); });
 }
 
 function renderGroupsList(){
@@ -578,7 +822,7 @@ function renderGroupsList(){
     cardsHtml = `
       <div class="empty-state">
         <div class="big">🎀</div>
-        <p>No circles yet. Start one with your roommates, your trip squad, or your bestie — and split every expense without the awkward math.</p>
+        <p>No circles yet. Start one with your roommates, trip squad, or bestie!</p>
       </div>`;
   } else {
     cardsHtml = groups.map(g=>{
@@ -625,9 +869,10 @@ function openAddCircleModal(){
     btn.dataset.mode==='create' ? renderCreateCircleForm() : renderJoinCircleForm();
   });
 }
+
 function renderCreateCircleForm(){
   $('#circleModeBody').innerHTML = `
-    <div class="field"><label>Circle name</label><input type="text" id="cName" placeholder="Goa Trip, Flat 3B, Girls' night…" maxlength="40"></div>
+    <div class="field"><label>Circle name</label><input type="text" id="cName" placeholder="Flatmates, Goa Trip, Dinner…" maxlength="40"></div>
     <div class="field"><label>Pick a charm</label><div class="emoji-pick-grid" id="cEmojiGrid">
       ${GROUP_EMOJIS.map((e,i)=>`<button class="emoji-pick${i===0?' selected':''}" data-emoji="${e}">${e}</button>`).join('')}
     </div></div>
@@ -643,22 +888,45 @@ function renderCreateCircleForm(){
   $('#cCreateBtn').addEventListener('click', async ()=>{
     const name = $('#cName').value.trim();
     if(!name){ toast('Give your circle a name 🎀'); return; }
-    $('#cCreateBtn').disabled=true; $('#cCreateBtn').textContent='Creating…';
-    try{
+    
+    const code = genCode();
+    const tempId = 'grp_' + Date.now();
+    const newGroup = {
+      id: tempId,
+      name, emoji: selectedEmoji, currency: $('#cCurrency').value,
+      createdBy: state.user.uid,
+      memberIds: [state.user.uid],
+      members: { [state.user.uid]: { name: state.user.displayName||'You', photo: state.user.photoURL||'' } },
+      inviteCode: code
+    };
+
+    // Instant local save
+    state.groups.push(newGroup);
+    storage.set('groups', state.groups);
+    closeModal();
+    toast('Circle created 🎀');
+    openGroup(tempId, newGroup);
+
+    // Background server save
+    try {
       const groupRef = doc(collection(db,'groups'));
-      const code = genCode();
+      newGroup.id = groupRef.id;
       await setDoc(groupRef, {
-        name, emoji:selectedEmoji, currency:$('#cCurrency').value,
-        createdBy: state.user.uid, createdAt: serverTimestamp(),
-        memberIds:[state.user.uid],
-        members:{ [state.user.uid]: {name: state.user.displayName||'You', photo: state.user.photoURL||''} },
-        inviteCode: code
+        ...newGroup,
+        createdAt: serverTimestamp()
       });
-      await setDoc(doc(db,'inviteCodes',code), {groupId: groupRef.id});
-      closeModal(); toast('Circle created 🎀'); openGroup(groupRef.id);
-    }catch(err){ console.error(err); toast('Something went wrong 💔'); $('#cCreateBtn').disabled=false; $('#cCreateBtn').textContent='Create circle'; }
+      await setDoc(doc(db,'inviteCodes', code), { groupId: groupRef.id });
+      // Update local with actual ID
+      state.groups = state.groups.map(g => g.id === tempId ? newGroup : g);
+      storage.set('groups', state.groups);
+      if(state.currentGroupId === tempId) state.currentGroupId = groupRef.id;
+      storage.set('last_group_id', groupRef.id);
+    } catch(err) {
+      console.error(err);
+    }
   });
 }
+
 function renderJoinCircleForm(){
   $('#circleModeBody').innerHTML = `
     <div class="field"><label>Invite code</label><input type="text" id="jCode" placeholder="ABC123" maxlength="6" style="text-transform:uppercase; letter-spacing:.1em;"></div>
@@ -666,70 +934,144 @@ function renderJoinCircleForm(){
   `;
   $('#jJoinBtn').addEventListener('click', async ()=>{
     const code = $('#jCode').value.trim().toUpperCase();
-    if(code.length<4){ toast('Enter a valid code'); return; }
+    if(code.length < 4){ toast('Enter a valid 6-character code'); return; }
     $('#jJoinBtn').disabled=true; $('#jJoinBtn').textContent='Joining…';
-    try{
-      const codeSnap = await getDoc(doc(db,'inviteCodes',code));
-      if(!codeSnap.exists()){ toast("That code didn't match any circle 🥺"); $('#jJoinBtn').disabled=false; $('#jJoinBtn').textContent='Join circle'; return; }
-      const groupId = codeSnap.data().groupId;
-      const gRef = doc(db,'groups',groupId);
-      const gSnap = await getDoc(gRef);
-      if(!gSnap.exists()){ toast('This circle no longer exists'); $('#jJoinBtn').disabled=false; $('#jJoinBtn').textContent='Join circle'; return; }
-      const data = gSnap.data();
-      if(!(data.memberIds||[]).includes(state.user.uid)){
-        await updateDoc(gRef, {
-          memberIds: arrayUnion(state.user.uid),
-          [`members.${state.user.uid}`]: {name: state.user.displayName||'You', photo: state.user.photoURL||''}
-        });
+
+    try {
+      let groupId = null;
+      // Direct lookup from code doc
+      const codeSnap = await getDoc(doc(db, 'inviteCodes', code));
+      if (codeSnap.exists()) {
+        groupId = codeSnap.data().groupId;
+      } else {
+        // Fallback: Query groups directly by inviteCode
+        const gQuery = query(collection(db, 'groups'), where('inviteCode', '==', code));
+        const gQuerySnap = await getDoc(gQuery);
+        if(!gQuerySnap.empty){
+          groupId = gQuerySnap.docs[0].id;
+        }
       }
-      closeModal(); toast('Welcome to the circle 💌'); openGroup(groupId);
-    }catch(err){ console.error(err); toast('Something went wrong 💔'); $('#jJoinBtn').disabled=false; $('#jJoinBtn').textContent='Join circle'; }
+
+      if(!groupId){
+        toast("Invalid code! Circle not found 🥺");
+        $('#jJoinBtn').disabled=false;
+        $('#jJoinBtn').textContent='Join circle';
+        return;
+      }
+
+      const gRef = doc(db, 'groups', groupId);
+      const gSnap = await getDoc(gRef);
+      if(!gSnap.exists()){
+        toast('This circle no longer exists 💔');
+        $('#jJoinBtn').disabled=false;
+        $('#jJoinBtn').textContent='Join circle';
+        return;
+      }
+
+      const grpData = { id: gSnap.id, ...gSnap.data() };
+      grpData.memberIds = grpData.memberIds || [];
+      grpData.members = grpData.members || {};
+
+      if(!grpData.memberIds.includes(state.user.uid)){
+        grpData.memberIds.push(state.user.uid);
+        grpData.members[state.user.uid] = {
+          name: state.user.displayName || 'You',
+          photo: state.user.photoURL || ''
+        };
+        // Background DB sync
+        updateDoc(gRef, {
+          memberIds: arrayUnion(state.user.uid),
+          [`members.${state.user.uid}`]: grpData.members[state.user.uid]
+        }).catch(console.error);
+      }
+
+      // Optimistic local add
+      state.groups = state.groups.filter(g => g.id !== groupId);
+      state.groups.push(grpData);
+      storage.set('groups', state.groups);
+
+      closeModal();
+      toast('Welcome to the circle 💌');
+      openGroup(groupId, grpData);
+    } catch(err){
+      console.error(err);
+      toast('Failed to join circle 💔');
+      $('#jJoinBtn').disabled=false;
+      $('#jJoinBtn').textContent='Join circle';
+    }
   });
 }
 
 /* ============================================================
-   GROUP DETAIL
+   GROUP DETAIL & EXPENSES
    ============================================================ */
-function openGroup(id){
-  state.currentGroupId=id; state.currentGroup=null; state.expenses=[]; state.activity=[];
-  state.currentTab='expenses'; state.filterTag='all'; state.searchQuery='';
-  subscribeGroupDoc(id); subscribeExpenses(id); subscribeActivity(id);
-  renderGroupDetailSkeleton();
+function openGroup(id, preloadedData = null){
+  state.currentGroupId = id;
+  storage.set('last_group_id', id);
+
+  // Instant load from memory/storage
+  state.currentGroup = preloadedData || state.groups.find(g => g.id === id) || storage.get(`grp_${id}`, null);
+  state.expenses = storage.get(`exp_${id}`, []);
+  state.activity = storage.get(`act_${id}`, []);
+  state.currentTab = 'expenses';
+  state.filterTag = 'all';
+  state.searchQuery = '';
+
+  if(state.currentGroup){
+    renderGroupDetail();
+  } else {
+    renderGroupDetailSkeleton();
+  }
+
+  subscribeGroupDoc(id);
+  subscribeExpenses(id);
+  subscribeActivity(id);
 }
+
 function backToGroups(){
   if(state.currentGroupUnsub) state.currentGroupUnsub();
   if(state.expensesUnsub) state.expensesUnsub();
   if(state.activityUnsub) state.activityUnsub();
-  state.currentGroupId=null; state.currentGroup=null; state.expenses=[]; state.activity=[];
+  state.currentGroupId = null;
+  storage.remove('last_group_id');
   renderGroupsList();
 }
+
 function subscribeGroupDoc(id){
   state.currentGroupUnsub = onSnapshot(doc(db,'groups',id), d=>{
-    if(!d.exists()){ toast('This circle was removed'); backToGroups(); return; }
-    state.currentGroup = {id:d.id,...d.data()};
-    renderGroupDetail();
-  });
+    if(d.exists()){
+      state.currentGroup = {id:d.id, ...d.data()};
+      storage.set(`grp_${id}`, state.currentGroup);
+      renderGroupDetail();
+    }
+  }, err => console.error(err));
 }
+
 function subscribeExpenses(id){
   const q = query(collection(db,'groups',id,'expenses'), orderBy('date','desc'));
   state.expensesUnsub = onSnapshot(q, snap=>{
-    state.expenses = snap.docs.map(d=>({id:d.id,...d.data()}));
+    state.expenses = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    storage.set(`exp_${id}`, state.expenses);
     if(state.currentGroup){
       if(state.currentTab==='expenses') renderExpenseList();
       if(state.currentTab==='balances') renderBalancesTab();
     }
-  }, err=>console.error(err));
+  }, err => console.error(err));
 }
+
 function subscribeActivity(id){
   const q = query(collection(db,'groups',id,'activity'), orderBy('at','desc'));
   state.activityUnsub = onSnapshot(q, snap=>{
     state.activity = snap.docs.map(d=>({id:d.id,...d.data()}));
+    storage.set(`act_${id}`, state.activity);
     if(state.currentTab==='activity') renderActivityTab();
-  }, err=>console.error(err));
+  }, err => console.error(err));
 }
+
 function renderGroupDetailSkeleton(){
   $('#viewRoot').innerHTML = `<div class="center-loader">💌</div>`;
 }
+
 function renderGroupDetail(){
   const g = state.currentGroup; if(!g) return;
   const memberIds = g.memberIds||[];
@@ -745,7 +1087,7 @@ function renderGroupDetail(){
       </div>
       <div class="member-row" data-action="openMembers">
         <div class="avatar-stack">${stack}</div>
-        <span class="lbl">${memberIds.length} member${memberIds.length!==1?'s':''} · invite code ${escapeHtml(g.inviteCode||'')}</span>
+        <span class="lbl">${memberIds.length} member${memberIds.length!==1?'s':''} · invite code <b>${escapeHtml(g.inviteCode||'')}</b></span>
       </div>
     </div>
     <div class="tabs">
@@ -759,12 +1101,13 @@ function renderGroupDetail(){
   else if(state.currentTab==='balances') renderBalancesTab();
   else renderActivityTab();
 }
+
 function setTab(tab){
   state.currentTab = tab;
   renderGroupDetail();
 }
 
-/* ---- Expenses tab ---- */
+/* Expenses Tab Rendering */
 function renderExpensesTab(){
   const usedTags = Array.from(new Set(state.expenses.filter(e=>e.type!=='settlement').map(e=>e.tag)));
   $('#tabBody').innerHTML = `
@@ -784,13 +1127,14 @@ function renderExpensesTab(){
   $('#expSearch').addEventListener('input', e=>{ state.searchQuery=e.target.value; renderExpenseList(); });
   renderExpenseList();
 }
+
 function renderExpenseList(){
   let list = state.expenses.filter(e=>!e.deleted || state.showDeleted);
   if(state.filterTag!=='all') list = list.filter(e=>e.tag===state.filterTag || (e.type==='settlement' && state.filterTag==='__settle'));
   if(state.searchQuery.trim()) list = list.filter(e=>(e.description||'').toLowerCase().includes(state.searchQuery.trim().toLowerCase()));
 
-  // month stat
-  const now = new Date(); const thisMonth = state.expenses.filter(ex=>!ex.deleted && ex.type!=='settlement' && new Date(ex.date).getMonth()===now.getMonth() && new Date(ex.date).getFullYear()===now.getFullYear());
+  const now = new Date();
+  const thisMonth = state.expenses.filter(ex=>!ex.deleted && ex.type!=='settlement' && new Date(ex.date).getMonth()===now.getMonth() && new Date(ex.date).getFullYear()===now.getFullYear());
   const monthTotal = thisMonth.reduce((s,e)=>s+e.amount,0);
   const myShare = thisMonth.reduce((s,e)=>s+((e.splits||{})[state.user.uid]||0),0);
   $('#statStrip').innerHTML = `<div class="stat-strip"><span>This month: ${fmtMoney(monthTotal)}</span><span>Your share: ${fmtMoney(myShare)}</span></div>`;
@@ -800,7 +1144,7 @@ function renderExpenseList(){
     cont.innerHTML = `<div class="empty-state"><div class="big">🧾</div><p>No expenses here yet. Tap + to add the first one.</p></div>`;
     return;
   }
-  // group by day
+
   const groups = {};
   list.forEach(e=>{ const key=fmtDateShort(e.date); (groups[key]=groups[key]||[]).push(e); });
   let html='';
@@ -810,12 +1154,13 @@ function renderExpenseList(){
   });
   cont.innerHTML = html;
 }
+
 function expenseCardHtml(e){
   const info = tagInfo(e.tag);
   const included = Object.keys(e.splits||{});
   const splitNote = e.splitType==='equal' ? `split equally · ${included.length} people` : `split manually · ${included.length} people`;
   return `
-  <div class="receipt ${e.deleted?'deleted':''}" data-action="expenseCard" data-id="${e.id}">
+  <div class="receipt ${e.deleted?'deleted':''}" data-id="${e.id}">
     <div class="washi"></div>
     <div class="receipt-top">
       <div class="receipt-desc">
@@ -838,9 +1183,10 @@ function expenseCardHtml(e){
     </div>
   </div>`;
 }
+
 function settlementCardHtml(e){
   return `
-  <div class="receipt settle-card" data-action="expenseCard" data-id="${e.id}">
+  <div class="receipt settle-card" data-id="${e.id}">
     <div class="washi" style="background:repeating-linear-gradient(45deg,var(--mint) 0 6px, var(--mint-soft) 6px 12px);"></div>
     <div class="receipt-top">
       <div class="receipt-desc">
@@ -862,7 +1208,7 @@ function settlementCardHtml(e){
   </div>`;
 }
 
-/* ---- Balances tab ---- */
+/* Balances Tab */
 function renderBalancesTab(){
   const g = state.currentGroup;
   const balances = computeBalances();
@@ -900,10 +1246,10 @@ function renderBalancesTab(){
   `;
 }
 
-/* ---- Activity tab ---- */
+/* Activity Tab */
 function renderActivityTab(){
   if(state.activity.length===0){
-    $('#tabBody').innerHTML = `<div class="empty-state"><div class="big">📔</div><p>Nothing logged yet. Every add, edit, and delete in this circle will show up here — so there's never a dispute.</p></div>
+    $('#tabBody').innerHTML = `<div class="empty-state"><div class="big">📔</div><p>Nothing logged yet. Every add, edit, and delete in this circle will show up here.</p></div>
     <div class="section-pad" style="text-align:center;"><button class="pill-btn ghost" data-action="exportCsv">⬇ Export expenses as CSV</button></div>`;
     return;
   }
@@ -922,6 +1268,7 @@ function renderActivityTab(){
   `).join('');
   $('#tabBody').innerHTML = html + `<div class="section-pad" style="text-align:center;"><button class="pill-btn ghost" data-action="exportCsv">⬇ Export expenses as CSV</button></div>`;
 }
+
 function viewHistory(expenseId){
   const exp = state.expenses.find(e=>e.id===expenseId);
   const entries = state.activity.filter(a=>a.expenseId===expenseId).slice().reverse();
@@ -937,9 +1284,7 @@ function viewHistory(expenseId){
   `);
 }
 
-/* ============================================================
-   MEMBERS SHEET
-   ============================================================ */
+/* Members View */
 function openMembers(){
   const g = state.currentGroup;
   const rows = (g.memberIds||[]).map(uid=>{
@@ -947,7 +1292,7 @@ function openMembers(){
     return `<div class="member-sheet-row">${avatarHtml(uid,36)}<div style="flex:1;"><div style="font-weight:600;font-size:14px;">${escapeHtml(m.name||'Member')}${uid===state.user.uid?' (you)':''}</div>${uid===g.createdBy?'<div style="font-size:11px;color:var(--ink-soft);">circle creator</div>':''}</div></div>`;
   }).join('');
   openModal(`
-    <div class="modal-title">Members</div>
+    <div class="modal-title">Members (${(g.memberIds||[]).length})</div>
     ${rows}
     <div class="field" style="margin-top:16px;">
       <label>Invite code — share so friends can join</label>
@@ -967,7 +1312,7 @@ function copyCode(code){
 }
 
 /* ============================================================
-   ADD / EDIT EXPENSE
+   ADD / EDIT EXPENSE (INSTANT OPTIMISTIC + BACKGROUND SYNC)
    ============================================================ */
 function openExpenseModal(expenseId){
   state.editingExpenseId = expenseId||null;
@@ -981,10 +1326,10 @@ function openExpenseModal(expenseId){
 
   openModal(`
     <div class="modal-title">${editing?'Edit expense':'Add expense'} 🧾</div>
-    <div class="field"><label>What was it for?</label><input type="text" id="eDesc" maxlength="60" placeholder="Dinner, cab, movie tickets…" value="${editing?escapeHtml(editing.description):''}"></div>
+    <div class="field"><label>What was it for?</label><input type="text" id="eDesc" maxlength="60" placeholder="Dinner, cab, grocery…" value="${editing?escapeHtml(editing.description):''}"></div>
     <div class="field"><label>Amount</label><input type="number" id="eAmount" min="0" step="0.01" placeholder="0.00" value="${editing?editing.amount:''}"></div>
     <div class="field"><label>Category</label><div class="chip-picker" id="eTagPicker">
-      ${TAGS.map(t=>`<button class="chip-opt${editing&&editing.tag===t.id||(!editing&&t.id==='other')?' selected':''}" data-tag="${t.id}">${t.emoji} ${t.label}</button>`).join('')}
+      ${TAGS.map(t=>`<button class="chip-opt${editing&&editing.tag===t.id||(!editing&&t.id==='food')?' selected':''}" data-tag="${t.id}">${t.emoji} ${t.label}</button>`).join('')}
     </div></div>
     <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="eDate" value="${defaultDate}"></div>
     <div class="field"><label>Paid by</label><select id="ePaidBy">
@@ -1003,7 +1348,7 @@ function openExpenseModal(expenseId){
     </div>
   `);
 
-  let selectedTag = editing ? editing.tag : 'other';
+  let selectedTag = editing ? editing.tag : 'food';
   $('#eTagPicker').addEventListener('click', e=>{
     const b=e.target.closest('.chip-opt'); if(!b) return;
     $$('.chip-opt',$('#eTagPicker')).forEach(x=>x.classList.remove('selected'));
@@ -1012,7 +1357,6 @@ function openExpenseModal(expenseId){
 
   let currentSplitType = splitType;
   function renderSplitBody(){
-    const amt = parseFloat($('#eAmount').value)||0;
     if(currentSplitType==='equal'){
       $('#eSplitBody').innerHTML = memberIds.map(uid=>`
         <div class="member-check-row" data-uid="${uid}">
@@ -1042,6 +1386,7 @@ function openExpenseModal(expenseId){
       updateManualStatus();
     }
   }
+
   function updateEqualPreview(){
     const amt = parseFloat($('#eAmount').value)||0;
     const n = includedSet.size;
@@ -1050,6 +1395,7 @@ function openExpenseModal(expenseId){
     el.className='alloc-status alloc-ok';
     el.textContent = `${fmtMoney(amt/n)} each × ${n} ${n===1?'person':'people'}`;
   }
+
   function updateManualStatus(){
     const amt = parseFloat($('#eAmount').value)||0;
     let sum=0; $$('.manualAmt',$('#eSplitBody')).forEach(inp=>{ sum += parseFloat(inp.value)||0; });
@@ -1058,6 +1404,7 @@ function openExpenseModal(expenseId){
     if(Math.abs(diff)<0.01){ el.className='alloc-status alloc-ok'; el.textContent=`Fully allocated ✓`; }
     else { el.className='alloc-status alloc-bad'; el.textContent = diff>0 ? `${fmtMoney(diff)} left to allocate` : `${fmtMoney(-diff)} over the total`; }
   }
+
   renderSplitBody();
   $('#eAmount').addEventListener('input', ()=>{ currentSplitType==='equal'?updateEqualPreview():updateManualStatus(); });
   $('#eSplitSeg').addEventListener('click', e=>{
@@ -1065,6 +1412,7 @@ function openExpenseModal(expenseId){
     $$('#eSplitSeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
     currentSplitType=b.dataset.split; renderSplitBody();
   });
+
   $('#eSplitBody').addEventListener('click', e=>{
     const box = e.target.closest('[data-action="toggleEqualMember"]'); if(!box) return;
     const uid = box.dataset.uid;
@@ -1081,6 +1429,7 @@ function openExpenseModal(expenseId){
     if(!description){ toast('Add a short description'); return; }
     if(!amount || amount<=0){ toast('Enter a valid amount'); return; }
     if(!dateLocal){ toast('Pick a date'); return; }
+
     let splits;
     if(currentSplitType==='equal'){
       if(includedSet.size===0){ toast('Select who this is split between'); return; }
@@ -1092,28 +1441,75 @@ function openExpenseModal(expenseId){
       if(Math.abs(sum-amount)>0.01){ toast('Manual split must add up to the total'); return; }
       if(Object.keys(splits).length===0){ toast('Enter at least one split amount'); return; }
     }
-    $('#eSaveBtn').disabled=true; $('#eSaveBtn').textContent='Saving…';
-    try{
-      const dateISO = new Date(dateLocal).toISOString();
+
+    const dateISO = new Date(dateLocal).toISOString();
+    const tempId = editing ? editing.id : 'exp_' + Date.now();
+
+    const expensePayload = {
+      id: tempId,
+      type: 'expense',
+      description,
+      amount,
+      tag: selectedTag,
+      date: dateISO,
+      paidBy,
+      splitType: currentSplitType,
+      splits,
+      deleted: false,
+      editCount: editing ? (editing.editCount||0) + 1 : 0
+    };
+
+    // Optimistic Local UI update
+    if(editing){
+      state.expenses = state.expenses.map(e => e.id === editing.id ? expensePayload : e);
+      const changes = diffExpense(editing, expensePayload);
+      state.activity.unshift({
+        id: 'act_' + Date.now(),
+        expenseId: editing.id,
+        expenseDesc: description,
+        action: 'edited',
+        byName: state.user.displayName || 'You',
+        at: new Date().toISOString(),
+        changes
+      });
+    } else {
+      state.expenses.unshift(expensePayload);
+      state.activity.unshift({
+        id: 'act_' + Date.now(),
+        expenseId: tempId,
+        expenseDesc: description,
+        action: 'created',
+        byName: state.user.displayName || 'You',
+        at: new Date().toISOString(),
+        changes: [`added "${description}" for ${fmtMoney(amount)}`]
+      });
+    }
+
+    storage.set(`exp_${state.currentGroupId}`, state.expenses);
+    storage.set(`act_${state.currentGroupId}`, state.activity);
+    renderExpenseList();
+    closeModal();
+    toast(editing ? 'Expense updated 💗' : 'Expense added 🎀');
+
+    // Background Firebase write
+    try {
       if(editing){
-        const ref = doc(db,'groups',state.currentGroupId,'expenses',editing.id);
-        const payload = {description, amount, tag:selectedTag, date:dateISO, paidBy, splitType:currentSplitType, splits, updatedAt:serverTimestamp(), editCount:(editing.editCount||0)+1};
-        await updateDoc(ref, payload);
-        const changes = diffExpense(editing, {...editing, ...payload, date:dateISO});
-        await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
-          expenseId:editing.id, expenseDesc:description, action:'edited', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(), changes
+        const ref = doc(db, 'groups', state.currentGroupId, 'expenses', editing.id);
+        await updateDoc(ref, { ...expensePayload, updatedAt: serverTimestamp() });
+        await addDoc(collection(db, 'groups', state.currentGroupId, 'activity'), {
+          expenseId: editing.id, expenseDesc: description, action: 'edited', by: state.user.uid, byName: state.user.displayName||'Someone', at: serverTimestamp(), changes: diffExpense(editing, expensePayload)
         });
-        toast('Expense updated 💗');
       } else {
-        const ref = doc(collection(db,'groups',state.currentGroupId,'expenses'));
-        await setDoc(ref, {type:'expense', description, amount, tag:selectedTag, date:dateISO, paidBy, splitType:currentSplitType, splits, createdBy:state.user.uid, createdAt:serverTimestamp(), updatedAt:serverTimestamp(), editCount:0, deleted:false});
-        await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
-          expenseId:ref.id, expenseDesc:description, action:'created', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(), changes:[`added "${description}" for ${fmtMoney(amount)}`]
+        const ref = doc(collection(db, 'groups', state.currentGroupId, 'expenses'));
+        expensePayload.id = ref.id;
+        await setDoc(ref, { ...expensePayload, createdBy: state.user.uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+        await addDoc(collection(db, 'groups', state.currentGroupId, 'activity'), {
+          expenseId: ref.id, expenseDesc: description, action: 'created', by: state.user.uid, byName: state.user.displayName||'Someone', at: serverTimestamp(), changes: [`added "${description}" for ${fmtMoney(amount)}`]
         });
-        toast('Expense added 🎀');
       }
-      closeModal();
-    }catch(err){ console.error(err); toast('Could not save 💔'); $('#eSaveBtn').disabled=false; $('#eSaveBtn').textContent=editing?'Save changes':'Add expense'; }
+    } catch(err){
+      console.error(err);
+    }
   });
 }
 
@@ -1121,23 +1517,42 @@ function askDeleteExpense(id){
   const exp = state.expenses.find(e=>e.id===id);
   openModal(`
     <div class="modal-title">Delete this ${exp && exp.type==='settlement'?'payment':'expense'}?</div>
-    <p style="font-size:14px;color:var(--ink-soft);line-height:1.5;">"${escapeHtml(exp?exp.description||'':'')}" will disappear from balances, but a record stays in Activity forever so the group always knows what happened.</p>
+    <p style="font-size:14px;color:var(--ink-soft);line-height:1.5;">"${escapeHtml(exp?exp.description||'':'')}" will disappear from balances, but stay in Activity history.</p>
     <div class="modal-actions">
       <button class="btn-secondary" data-action="closeModal">Keep it</button>
       <button class="btn-primary btn-danger" data-action="confirmDeleteExpense" data-id="${id}">Delete</button>
     </div>
   `);
 }
+
 async function confirmDeleteExpense(id){
   const exp = state.expenses.find(e=>e.id===id);
-  try{
+  if(exp) {
+    exp.deleted = true;
+    state.activity.unshift({
+      id: 'act_' + Date.now(),
+      expenseId: id,
+      expenseDesc: exp.description,
+      action: 'deleted',
+      byName: state.user.displayName || 'You',
+      at: new Date().toISOString(),
+      changes: [`deleted "${exp.description}" (${fmtMoney(exp.amount)})`]
+    });
+    storage.set(`exp_${state.currentGroupId}`, state.expenses);
+    storage.set(`act_${state.currentGroupId}`, state.activity);
+    renderExpenseList();
+    closeModal();
+    toast('Deleted — logged in Activity 🗑️');
+  }
+
+  // Background server sync
+  try {
     await updateDoc(doc(db,'groups',state.currentGroupId,'expenses',id), {deleted:true, deletedAt:serverTimestamp(), deletedBy:state.user.uid});
     await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
       expenseId:id, expenseDesc:exp.description, action:'deleted', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(),
       changes:[`deleted "${exp.description}" (${fmtMoney(exp.amount)})`]
     });
-    closeModal(); toast('Deleted — logged in Activity 🗑️');
-  }catch(err){ console.error(err); toast('Could not delete 💔'); }
+  }catch(err){ console.error(err); }
 }
 
 /* ============================================================
@@ -1151,40 +1566,74 @@ function openSettleModal(prefillFrom, prefillTo, prefillAmount){
     <div class="field"><label>From</label><select id="sFrom">${memberIds.map(uid=>`<option value="${uid}" ${uid===(prefillFrom||state.user.uid)?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}</select></div>
     <div class="field"><label>To</label><select id="sTo">${memberIds.map(uid=>`<option value="${uid}" ${uid===prefillTo?'selected':''}>${escapeHtml(memberName(uid))}</option>`).join('')}</select></div>
     <div class="field"><label>Amount</label><input type="number" id="sAmount" min="0" step="0.01" value="${prefillAmount||''}"></div>
-    <div class="field"><label>Note (optional)</label><input type="text" id="sNote" maxlength="60" placeholder="Paid via UPI…"></div>
+    <div class="field"><label>Note (optional)</label><input type="text" id="sNote" maxlength="60" placeholder="UPI, Cash, Bank…"></div>
     <div class="field"><label>Date &amp; time</label><input type="datetime-local" id="sDate" value="${toLocalInputValue(new Date())}"></div>
     <div class="modal-actions">
       <button class="btn-secondary" data-action="closeModal">Cancel</button>
       <button class="btn-primary" id="sSaveBtn">Save payment</button>
     </div>
   `);
+
   $('#sSaveBtn').addEventListener('click', async ()=>{
     const from=$('#sFrom').value, to=$('#sTo').value, amount=parseFloat($('#sAmount').value), note=$('#sNote').value.trim(), dateLocal=$('#sDate').value;
     if(from===to){ toast('Pick two different people'); return; }
     if(!amount || amount<=0){ toast('Enter a valid amount'); return; }
-    $('#sSaveBtn').disabled=true; $('#sSaveBtn').textContent='Saving…';
-    try{
-      const dateISO = new Date(dateLocal).toISOString();
+
+    const dateISO = new Date(dateLocal).toISOString();
+    const tempId = 'set_' + Date.now();
+    const desc = `Payment · ${memberName(from)} → ${memberName(to)}`;
+
+    const paymentObj = {
+      id: tempId,
+      type: 'settlement',
+      description: desc,
+      from, to, amount, note,
+      date: dateISO,
+      deleted: false,
+      editCount: 0
+    };
+
+    // Instant local save
+    state.expenses.unshift(paymentObj);
+    state.activity.unshift({
+      id: 'act_' + Date.now(),
+      expenseId: tempId,
+      expenseDesc: desc,
+      action: 'settled',
+      byName: state.user.displayName || 'You',
+      at: new Date().toISOString(),
+      changes: [`recorded payment of ${fmtMoney(amount)} from ${memberName(from)} to ${memberName(to)}`]
+    });
+    storage.set(`exp_${state.currentGroupId}`, state.expenses);
+    storage.set(`act_${state.currentGroupId}`, state.activity);
+    
+    if(state.currentTab === 'balances') renderBalancesTab();
+    else renderExpenseList();
+    closeModal();
+    toast('Payment recorded 💗');
+
+    // Background Firebase write
+    try {
       const ref = doc(collection(db,'groups',state.currentGroupId,'expenses'));
-      await setDoc(ref, {type:'settlement', description:`Payment · ${memberName(from)} → ${memberName(to)}`, from, to, amount, note, date:dateISO, createdBy:state.user.uid, createdAt:serverTimestamp(), updatedAt:serverTimestamp(), editCount:0, deleted:false});
+      paymentObj.id = ref.id;
+      await setDoc(ref, { ...paymentObj, createdBy:state.user.uid, createdAt:serverTimestamp(), updatedAt:serverTimestamp() });
       await addDoc(collection(db,'groups',state.currentGroupId,'activity'), {
         expenseId:ref.id, expenseDesc:ref.id, action:'settled', by:state.user.uid, byName:state.user.displayName||'Someone', at:serverTimestamp(),
-        changes:[`recorded a payment of ${fmtMoney(amount)} from ${memberName(from)} to ${memberName(to)}`]
+        changes:[`recorded payment of ${fmtMoney(amount)} from ${memberName(from)} to ${memberName(to)}`]
       });
-      closeModal(); toast('Payment recorded 💗');
-    }catch(err){ console.error(err); toast('Could not save 💔'); $('#sSaveBtn').disabled=false; $('#sSaveBtn').textContent='Save payment'; }
+    }catch(err){ console.error(err); }
   });
 }
 
 /* ============================================================
-   CSV EXPORT
+   EXPORT CSV
    ============================================================ */
 function exportCsv(){
   const rows = [['Date','Description','Category','Amount','Paid By','Split Type','Deleted']];
   state.expenses.slice().reverse().forEach(e=>{
     rows.push([
       new Date(e.date).toLocaleString(),
-      e.type==='settlement' ? e.description : e.description,
+      e.description,
       e.type==='settlement' ? 'Settlement' : tagInfo(e.tag).label,
       e.amount,
       e.type==='settlement' ? memberName(e.from) : memberName(e.paidBy),
@@ -1202,15 +1651,18 @@ function exportCsv(){
 }
 
 /* ============================================================
-   GLOBAL CLICK DELEGATION
+   EVENT DELEGATION (CRITICAL FIXES APPLIED)
    ============================================================ */
 document.addEventListener('click', e=>{
   const el = e.target.closest('[data-action]');
   if(!el) return;
   const action = el.dataset.action;
+
   switch(action){
     case 'signIn': doSignIn(); break;
     case 'signOut': doSignOut(); break;
+    case 'openProfileModal': openProfileModal(); break;
+    case 'openFriends': openFriendsModal(); break;
     case 'openAddCircle': openAddCircleModal(); break;
     case 'openGroup': openGroup(el.dataset.id); break;
     case 'backToGroups': backToGroups(); break;
@@ -1220,6 +1672,7 @@ document.addEventListener('click', e=>{
     case 'openMembers': openMembers(); break;
     case 'copyCode': copyCode(el.dataset.code); break;
     case 'closeModal': closeModal(); break;
+    case 'openAddExpense': openExpenseModal(null); break;
     case 'editExpense': openExpenseModal(el.dataset.id); break;
     case 'askDeleteExpense': askDeleteExpense(el.dataset.id); break;
     case 'confirmDeleteExpense': confirmDeleteExpense(el.dataset.id); break;
@@ -1227,13 +1680,20 @@ document.addEventListener('click', e=>{
     case 'openSettle': openSettleModal(); break;
     case 'quickSettle': openSettleModal(el.dataset.from, el.dataset.to, el.dataset.amount); break;
     case 'exportCsv': exportCsv(); break;
-    case 'expenseCard': /* no-op: tap on card body */ break;
   }
 });
-document.addEventListener('click', e=>{
-  const el = e.target.closest('[data-action="openAddExpense"]');
-  if(el) openExpenseModal(null);
-});
+
+// Initialization
+if (state.user) {
+  $('#authScreen').classList.add('hidden');
+  $('#mainScreen').classList.remove('hidden');
+  updateTopAvatar();
+  if (state.currentGroupId) {
+    openGroup(state.currentGroupId);
+  } else {
+    renderGroupsList();
+  }
+}
 </script>
 </body>
 </html>
