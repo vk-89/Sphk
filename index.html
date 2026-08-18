@@ -335,7 +335,7 @@ import {
 import {
   getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, addDoc, collection,
   query, where, orderBy, onSnapshot, serverTimestamp, arrayUnion, arrayRemove,
-  deleteField, enableIndexedDbPersistence
+  deleteField, enableIndexedDbPersistence, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -958,26 +958,33 @@ function renderJoinCircleForm(){
       }
 
       const gRef = doc(db, 'groups', groupId);
-      const newMemberData = {
-        name: state.user.displayName || 'You',
-        photo: state.user.photoURL || ''
-      };
+      const gSnap = await getDoc(gRef);
+      if(!gSnap.exists()){
+        toast("Invalid code! Circle not found 🥺");
+        $('#jJoinBtn').disabled=false;
+        $('#jJoinBtn').textContent='Join circle';
+        return;
+      }
+      const grpData = { id: gSnap.id, ...gSnap.data() };
 
-      await updateDoc(gRef, {
-        memberIds: arrayUnion(state.user.uid),
-        [`members.${state.user.uid}`]: newMemberData
-      });
+      if((grpData.memberIds||[]).includes(state.user.uid)){
+        state.groups = state.groups.filter(g => g.id !== groupId);
+        state.groups.push(grpData);
+        storage.set('groups', state.groups);
+        closeModal();
+        toast("You're already in this circle 💌");
+        openGroup(groupId, grpData);
+        return;
+      }
 
-      const updatedSnap = await getDoc(gRef);
-      const grpData = { id: updatedSnap.id, ...updatedSnap.data() };
+      const dummies = Object.entries(grpData.members||{}).filter(([,m])=>m && m.isDummy);
+      if(dummies.length > 0){
+        closeModal();
+        renderClaimDummyPrompt(grpData, dummies);
+        return;
+      }
 
-      state.groups = state.groups.filter(g => g.id !== groupId);
-      state.groups.push(grpData);
-      storage.set('groups', state.groups);
-
-      closeModal();
-      toast('Welcome to the circle 💌');
-      openGroup(groupId, grpData);
+      await finishJoinCircle(grpData);
     } catch(err){
       console.error(err);
       toast('Failed to join circle 💔');
@@ -985,6 +992,137 @@ function renderJoinCircleForm(){
       $('#jJoinBtn').textContent='Join circle';
     }
   });
+}
+
+/* Join as a brand-new member (no dummy claimed) */
+async function finishJoinCircle(grpData){
+  const groupId = grpData.id;
+  const gRef = doc(db, 'groups', groupId);
+  const newMemberData = {
+    name: state.user.displayName || 'You',
+    photo: state.user.photoURL || ''
+  };
+
+  await updateDoc(gRef, {
+    memberIds: arrayUnion(state.user.uid),
+    [`members.${state.user.uid}`]: newMemberData
+  });
+
+  const updatedSnap = await getDoc(gRef);
+  const updated = { id: updatedSnap.id, ...updatedSnap.data() };
+
+  state.groups = state.groups.filter(g => g.id !== groupId);
+  state.groups.push(updated);
+  storage.set('groups', state.groups);
+
+  toast('Welcome to the circle 💌');
+  openGroup(groupId, updated);
+}
+
+/* Ask a person joining via invite code whether they're actually one of the
+   "no account" dummy members already in the circle, so their existing
+   expenses/balances transfer to their real account instead of starting fresh. */
+function renderClaimDummyPrompt(grpData, dummies){
+  openModal(`
+    <div class="modal-title">${grpData.emoji||'💌'} Is one of these you?</div>
+    <p style="font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin-top:0;">Someone already added expenses on your behalf in <b>${escapeHtml(grpData.name||'this circle')}</b>. Claim your spot so those stay with you.</p>
+    <div style="max-height:260px;overflow-y:auto;">
+      ${dummies.map(([uid,m])=>`
+        <div class="member-sheet-row">
+          <div class="avatar" style="background:${avatarColorFor(uid)}">${escapeHtml(initials(m.name||'?'))}</div>
+          <div style="flex:1;font-weight:600;font-size:14px;">${escapeHtml(m.name||'Member')}</div>
+          <button class="pill-btn" data-action="claimDummyMember" data-gid="${escapeHtml(grpData.id)}" data-uid="${escapeHtml(uid)}">That's me</button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" style="flex:1" data-action="joinAsNewMember" data-gid="${escapeHtml(grpData.id)}">None of these — I'm new</button>
+    </div>
+  `);
+  state._pendingJoinGroup = grpData;
+}
+
+async function joinAsNewMember(groupId){
+  const grpData = state._pendingJoinGroup;
+  if(!grpData || grpData.id!==groupId) return;
+  closeModal();
+  toast('Joining…');
+  try {
+    await finishJoinCircle(grpData);
+  } catch(err){
+    console.error(err);
+    toast('Failed to join circle 💔');
+  }
+  state._pendingJoinGroup = null;
+}
+
+async function claimDummyMember(groupId, dummyUid){
+  const grpData = state._pendingJoinGroup;
+  if(!grpData || grpData.id!==groupId) return;
+  closeModal();
+  toast('Claiming your spot…');
+
+  const dummyName = (grpData.members && grpData.members[dummyUid] && grpData.members[dummyUid].name) || 'Member';
+  const realUid = state.user.uid;
+  const realMemberData = { name: state.user.displayName || 'You', photo: state.user.photoURL || '' };
+
+  try {
+    const gRef = doc(db, 'groups', groupId);
+    const expensesSnap = await getDocs(collection(db, 'groups', groupId, 'expenses'));
+
+    const batch = writeBatch(db);
+
+    // Move the member entry: drop the dummy, add the real account.
+    batch.update(gRef, {
+      memberIds: arrayRemove(dummyUid),
+      [`members.${dummyUid}`]: deleteField()
+    });
+    batch.update(gRef, {
+      memberIds: arrayUnion(realUid),
+      [`members.${realUid}`]: realMemberData
+    });
+
+    // Repoint every expense/settlement that referenced the dummy uid.
+    expensesSnap.forEach(docSnap=>{
+      const e = docSnap.data();
+      const updates = {};
+      if(e.paidBy === dummyUid) updates.paidBy = realUid;
+      if(e.from === dummyUid) updates.from = realUid;
+      if(e.to === dummyUid) updates.to = realUid;
+      if(e.splits && Object.prototype.hasOwnProperty.call(e.splits, dummyUid)){
+        updates[`splits.${realUid}`] = e.splits[dummyUid];
+        updates[`splits.${dummyUid}`] = deleteField();
+      }
+      if(Object.keys(updates).length>0){
+        batch.update(docSnap.ref, updates);
+      }
+    });
+
+    await batch.commit();
+
+    await addDoc(collection(db, 'groups', groupId, 'activity'), {
+      action: 'joined',
+      by: realUid,
+      byName: realMemberData.name,
+      at: serverTimestamp(),
+      changes: [`claimed ${dummyName}'s spot and joined the circle`]
+    });
+
+    // Refresh local caches from the server.
+    const updatedGroupSnap = await getDoc(gRef);
+    const updatedGroup = { id: updatedGroupSnap.id, ...updatedGroupSnap.data() };
+    state.groups = state.groups.filter(g => g.id !== groupId);
+    state.groups.push(updatedGroup);
+    storage.set('groups', state.groups);
+    storage.remove(`exp_${groupId}`);
+
+    toast(`Welcome back — that's still your history 💌`);
+    openGroup(groupId, updatedGroup);
+  } catch(err){
+    console.error(err);
+    toast('Could not claim that spot — try again 💔');
+  }
+  state._pendingJoinGroup = null;
 }
 
 /* ============================================================
@@ -1796,6 +1934,8 @@ document.addEventListener('click', e=>{
     case 'addFriendToGroup': addFriendToGroup(el.dataset.uid); break;
     case 'askRemoveDummyMember': askRemoveDummyMember(el.dataset.uid); break;
     case 'confirmRemoveDummyMember': confirmRemoveDummyMember(el.dataset.uid); break;
+    case 'claimDummyMember': claimDummyMember(el.dataset.gid, el.dataset.uid); break;
+    case 'joinAsNewMember': joinAsNewMember(el.dataset.gid); break;
     case 'copyCode': copyCode(el.dataset.code); break;
     case 'closeModal': closeModal(); break;
     case 'openAddExpense': openExpenseModal(null); break;
